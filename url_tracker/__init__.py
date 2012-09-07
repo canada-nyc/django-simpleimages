@@ -6,6 +6,9 @@ from django.db.models import signals
 from url_tracker.models import URLChangeRecord
 
 
+__version__ = (0, 1, 2, 'alpha', 0)
+
+
 class URLTrackingError(Exception):
     """
     Exception raised when an error occures during URL tracking.

@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "django-url-tracker",
-    version = '0.1.1',
+    version = 'versiontools:url_tracker:',
     url = "https://github.com/tangentlabs/django-url-tracker",
     author = "Sebastian Vetter",
     author_email = "sebastian.vetter@tangentone.com.au",
@@ -22,6 +22,7 @@ setup(
     packages = find_packages(exclude=["docs*", "tests*"]),
     include_package_data = True,
     install_requires=[
+        'versiontools>=1.9.1',
         'django>=1.3.1',
         'South>=0.7.3',
     ],

@@ -6,7 +6,6 @@ Replace this with more appropriate tests for your application.
 """
 from mock import Mock
 
-from django.http import Http404
 from django.test import TestCase
 
 import url_tracker
@@ -170,14 +169,14 @@ class TestTracking(TestCase):
         self.assertEquals(record.deleted, False)
 
 
-class TestUrlChanges(TestCase):
+class TestUrlRecord(TestCase):
 
     def test_invalid_url(self):
         response = self.client.get('/work/an-invalid-project/')
         self.assertEquals(response.status_code, 404)
 
     def test_changed_url(self):
-        url_change = URLChangeRecord.objects.create(
+        URLChangeRecord.objects.create(
             old_url='/the/old-url/',
             new_url='/the/new/url/',
         )
@@ -187,7 +186,7 @@ class TestUrlChanges(TestCase):
         self.assertEquals(response['location'], 'http://testserver/the/new/url/')
 
     def test_deleted_url(self):
-        url_change = URLChangeRecord.objects.create(
+        URLChangeRecord.objects.create(
             old_url='/the/old-url/',
             new_url='',
             deleted=True
@@ -195,3 +194,13 @@ class TestUrlChanges(TestCase):
 
         response = self.client.get('/the/old-url/')
         self.assertEquals(response.status_code, 410)
+
+    def test_redirecting_from_a_url_with_get_parameters(self):
+        old_url = '/the/old-url/afile.php?q=test&another=45'
+        URLChangeRecord.objects.create(
+            old_url=old_url,
+            new_url='/the/new/url/',
+        )
+
+        response = self.client.get(old_url)
+        self.assertEquals(response.status_code, 301)
