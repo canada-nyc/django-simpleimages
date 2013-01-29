@@ -1,6 +1,9 @@
 django-url-tracker
 ==================
 
+.. image:: https://travis-ci.org/elbaschid/django-url-tracker.png
+    :target: https://travis-ci.org/elbaschid/django-url-tracker
+
 The ``django-url-tracker`` is meant to be a easy-to-use addition to
 a website to enhance its SEO. This might seem slightly pointless
 as `Cool URIs don't change
