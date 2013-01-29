@@ -4,7 +4,7 @@ import sys
 import logging
 logging.disable(logging.CRITICAL)
 
-from argparse import ArgumentParser 
+from argparse import ArgumentParser
 from coverage import coverage
 
 import tests.config

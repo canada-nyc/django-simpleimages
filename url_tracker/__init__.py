@@ -17,7 +17,7 @@ def lookup_previous_url(instance, **kwargs):
     """
     Look up the absolute URL of *instance* from the database while it is
     in a ``pre_save`` state. The previous url is saved in the instance as
-    *_old_url* so that it can be used after the instance was saved. 
+    *_old_url* so that it can be used after the instance was saved.
 
     If the instance has not been saved to the database (i.e. is new) the
     *_old_url* will be stored as ``None`` which will prevent further tracking
@@ -34,10 +34,10 @@ def lookup_previous_url(instance, **kwargs):
 
 def track_changed_url(instance, **kwargs):
     """
-    Track a URL change for *instance* after a new instance was saved. If 
+    Track a URL change for *instance* after a new instance was saved. If
     the old URL is ``None`` (i.e. *instance* is new) or the new URL and
     the old one are equal (i.e. URL is unchanged), nothing will be changed
-    in the database. 
+    in the database.
 
     For URL changes, the database will be checked for existing records that
     have a *new_url* entry equal to the old URL of *instance* and updates
@@ -45,7 +45,7 @@ def track_changed_url(instance, **kwargs):
     *instance*.
     """
     old_url = getattr(instance, '_old_url', None)
-    
+
     if old_url is None:
         return
 
@@ -58,8 +58,8 @@ def track_changed_url(instance, **kwargs):
         "tracking URL change for instance '%s' URL",
         instance.__class__.__name__
     )
-    
-    # check if the new URL is already in the table and 
+
+    # check if the new URL is already in the table and
     # remove these entries
     for record in URLChangeRecord.objects.filter(old_url=new_url):
         record.delete()
@@ -95,10 +95,10 @@ def track_changed_url(instance, **kwargs):
 
 def track_deleted_url(instance, **kwargs):
     """
-    Track the URL of a deleted *instance*. It updates all existing 
+    Track the URL of a deleted *instance*. It updates all existing
     records with ``new_url`` being set to the *instance*'s old URL and
-    marks this record as deleted URL. 
-    
+    marks this record as deleted URL.
+
     A new ``URLChangeRecord`` is created for the old URL of *instance*
     that is marked as deleted.
     """
@@ -128,11 +128,11 @@ def track_deleted_url(instance, **kwargs):
 
 def track_url_changes_for_model(model, absolute_url_method='get_absolute_url'):
     """
-    Keep track of URL changes of the specified *model*. This will connect the 
-    *model*'s ``pre_save``, ``post_save`` and ``post_delete`` signals to the 
-    tracking methods ``lookup_previous_url``, ``track_changed_url`` 
+    Keep track of URL changes of the specified *model*. This will connect the
+    *model*'s ``pre_save``, ``post_save`` and ``post_delete`` signals to the
+    tracking methods ``lookup_previous_url``, ``track_changed_url``
     and ``track_deleted_url`` respectively. URL changes will be logged in the
-    ``URLChangeRecord`` table and are handled by the tracking middleware when 
+    ``URLChangeRecord`` table and are handled by the tracking middleware when
     a changed URL is called.
     """
     try:

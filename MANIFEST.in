@@ -1,2 +1,2 @@
-include README.rst LICENSE AUTHORS *.rst
+include LICENSE AUTHORS *.rst
 recursive-include tests *
