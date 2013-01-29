@@ -2,6 +2,12 @@
 Changelog
 =========
 
+0.1.3
+-----
+
+* Increased the max length of the old and new URL database fields to match
+  Django's redirects app (200).
+
 0.1.2
 -----
 
