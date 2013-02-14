@@ -8,4 +8,6 @@ class URLChangeRecord(models.Model):
     date_changed = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return "URL change for '%s'" % self.old_url
+        if self.new_url and not self.deleted:
+            return "%s ---> %s" % (self.old_url, self.new_url)
+        return self.old_url
