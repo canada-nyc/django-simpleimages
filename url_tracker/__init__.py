@@ -1,3 +1,4 @@
+from functools import partial
 import logging
 logger = logging.getLogger(__file__)
 
@@ -13,50 +14,86 @@ class URLTrackingError(Exception):
     pass
 
 
-def lookup_previous_url(instance, **kwargs):
+def get_dispatch_uid(absolute_url_method):
+    """
+    Return a dispatch_uid to use in all signals based on the
+    *absolute_url_method* for the model.
+    """
+    return 'urltracker.track_url_changes_for_model.' + absolute_url_method
+
+
+def lookup_previous_url(absolute_url_method, instance, **kwargs):
     """
     Look up the absolute URL of *instance* from the database while it is
-    in a ``pre_save`` state. The previous url is saved in the instance as
-    *_old_url* so that it can be used after the instance was saved.
+    in a ``pre_save`` state. Adds a post save signal that will compare the
+    previous url to the new url based on the *absoulute_url_method*.
 
     If the instance has not been saved to the database (i.e. is new) the
-    *_old_url* will be stored as ``None`` which will prevent further tracking
+    old_url will sent as ``None`` which will prevent further tracking
     after saving the instance.
     """
+    model = instance.__class__
     try:
-        db_instance = instance.__class__.objects.get(pk=instance.pk)
-        logger.debug("saving old URL for instance '%s' URL", instance.__class__.__name__)
-        instance._old_url = db_instance._get_tracked_url()
-    except instance.__class__.DoesNotExist:
+        db_instance = model.objects.get(pk=instance.pk)
+    except model.DoesNotExist:
         logger.debug("new instance, no URL tracking required")
-        instance._old_url = None
+        old_url = None
+    else:
+        logger.debug("saving old URL for instance '%s' URL", instance.__class__.__name__)
+        old_url = getattr(db_instance, absolute_url_method)()
+
+    # Send the dispatch_uid to the signal, so that it will disconnect itself
+    # since the signal function is specific to the only this old_url
+    track_changed_url_for_model = partial(
+        track_changed_url,
+        old_url=old_url,
+        absolute_url_method=absolute_url_method,
+        signal_dispatch_uid=get_dispatch_uid(absolute_url_method),
+    )
+    signals.post_save.connect(
+        track_changed_url_for_model,
+        sender=model,
+        weak=False,
+        dispatch_uid=get_dispatch_uid(absolute_url_method)
+    )
 
 
-def track_changed_url(instance, **kwargs):
+def track_changed_url(old_url, absolute_url_method, signal_dispatch_uid, instance, **kwargs):
     """
     Track a URL change for *instance* after a new instance was saved. If
-    the old URL is ``None`` (i.e. *instance* is new) or the new URL and
+    the *old_url* is ``None`` (i.e. *instance* is new) or the new URL and
     the old one are equal (i.e. URL is unchanged), nothing will be changed
-    in the database.
+    in the database. Also deactivate the signal that called this function,
+    based on the *signal_dispatch_uid*, because this function is specific
+    to a certain *old_url* and has to be recreated on every pre_save.
 
     For URL changes, the database will be checked for existing records that
     have a *new_url* entry equal to the old URL of *instance* and updates
     these records. Then, a new ``URLChangeRecord`` is created for the
     *instance*.
     """
-    old_url = getattr(instance, '_old_url', None)
+    model = instance.__class__
+    new_url = getattr(instance, absolute_url_method)()
 
-    if old_url is None:
+    signals.post_save.disconnect(
+        weak=False,
+        sender=model,
+        dispatch_uid=signal_dispatch_uid
+    )
+
+    # Don't save a record if the urls are equal, or if the url was previously
+    # blank, or the object was just created.
+    if not ((old_url == new_url) or old_url):
         return
 
-    new_url = instance._get_tracked_url()
-    # we don't want to store URL changes for unchanged URL
-    if old_url == new_url:
+    # If the new_url is blank, then delete all records for this object
+    if not new_url:
+        delete_urls(old_url)
         return
 
     logger.debug(
         "tracking URL change for instance '%s' URL",
-        instance.__class__.__name__
+        model.__name__
     )
 
     # check if the new URL is already in the table and
@@ -73,13 +110,14 @@ def track_changed_url(instance, **kwargs):
     # new URL. If the record already exists, it is assumed that the
     # current change is to be used and the existing new_url will be
     # detached from the old_url.
-    record, created = URLChangeRecord.objects.get_or_create(old_url=instance._old_url)
+    record, created = URLChangeRecord.objects.get_or_create(old_url=old_url)
     record.new_url = new_url
     record.deleted = False
     record.save()
+    return new_url
 
 
-def track_deleted_url(instance, **kwargs):
+def track_deleted_url(absolute_url_method, instance, **kwargs):
     """
     Track the URL of a deleted *instance*. It updates all existing
     records with ``new_url`` being set to the *instance*'s old URL and
@@ -89,33 +127,38 @@ def track_deleted_url(instance, **kwargs):
     that is marked as deleted.
     """
     logger.debug("tracking deleted instance '%s' URL", instance.__class__.__name__)
-    old_url = getattr(instance, '_old_url', None)
-    if old_url is None:
+    old_url = getattr(instance, absolute_url_method)()
+    if not old_url:
         return
+    delete_urls(old_url)
 
-    # updated existing records with the old URL being the new_url
-    # of this record. Changed the *deleted* flag to be ``False``
-    URLChangeRecord.objects.filter(new_url=old_url).update(
+
+def delete_urls(current_url):
+    '''
+    Updates all instances of ``URLChangeRecord`` with the *current_url* as
+    their ``new_url`` are updated with their ``new_url`` being switched to
+    their ``old_url`` and recorded as ``deleted``.
+    '''
+    URLChangeRecord.objects.filter(new_url=current_url).update(
         new_url='',
         deleted=True)
-
-
-    record, created = URLChangeRecord.objects.get_or_create(old_url=old_url)
-    record.deleted =True
+    record, created = URLChangeRecord.objects.get_or_create(
+        old_url=current_url)
+    record.deleted = True
     record.save()
 
 
 def track_url_changes_for_model(model, absolute_url_method='get_absolute_url'):
     """
     Keep track of URL changes of the specified *model*. This will connect the
-    *model*'s ``pre_save``, ``post_save`` and ``post_delete`` signals to the
-    tracking methods ``lookup_previous_url``, ``track_changed_url``
+    *model*'s ``pre_save`` and ``post_delete`` signals to the
+    tracking methods ``lookup_previous_url``
     and ``track_deleted_url`` respectively. URL changes will be logged in the
     ``URLChangeRecord`` table and are handled by the tracking middleware when
     a changed URL is called.
     """
     try:
-        model._get_tracked_url = getattr(model, absolute_url_method)
+        getattr(model, absolute_url_method)
     except AttributeError:
         raise URLTrackingError(
             "cannot track instance %s without method %s",
@@ -123,6 +166,18 @@ def track_url_changes_for_model(model, absolute_url_method='get_absolute_url'):
             absolute_url_method,
         )
 
-    signals.pre_save.connect(lookup_previous_url, sender=model, weak=False)
-    signals.post_save.connect(track_changed_url, sender=model, weak=False)
-    signals.post_delete.connect(track_deleted_url, sender=model, weak=False)
+    # Creates specialized functions that know the absolute_url_method
+    # so that when the pre_save and post_save signals are called, they know
+    # where to look to get the url
+    lookup_previous_url_for_model = partial(lookup_previous_url, absolute_url_method)
+    track_deleted_url_for_model = partial(track_deleted_url, absolute_url_method)
+    signals.pre_save.connect(
+        lookup_previous_url_for_model,
+        sender=model,
+        weak=False,
+        dispatch_uid=get_dispatch_uid(absolute_url_method))
+    signals.post_delete.connect(
+        track_deleted_url_for_model,
+        sender=model,
+        weak=False,
+        dispatch_uid=get_dispatch_uid(absolute_url_method))
