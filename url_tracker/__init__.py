@@ -60,26 +60,34 @@ def lookup_previous_url(absolute_url_method, instance, **kwargs):
 
 def track_changed_url(old_url, absolute_url_method, signal_dispatch_uid, instance, **kwargs):
     """
+    Deactivate the signal that called this function,
+    based on the *signal_dispatch_uid*, because this function is specific
+    to a certain *old_url* and has to be recreated on every pre_save.
+
+    Then call ``change_urls`` with the *old_url*, *absolute_url_method*,
+    and *instance*.
+    """
+    signals.post_save.disconnect(
+        weak=False,
+        sender=instance.__class__,
+        dispatch_uid=signal_dispatch_uid
+    )
+    change_urls(old_url, absolute_url_method, instance)
+
+
+def change_urls(old_url, absolute_url_method, instance):
+    """
     Track a URL change for *instance* after a new instance was saved. If
     the *old_url* is ``None`` (i.e. *instance* is new) or the new URL and
     the old one are equal (i.e. URL is unchanged), nothing will be changed
-    in the database. Also deactivate the signal that called this function,
-    based on the *signal_dispatch_uid*, because this function is specific
-    to a certain *old_url* and has to be recreated on every pre_save.
+    in the database.
 
     For URL changes, the database will be checked for existing records that
     have a *new_url* entry equal to the old URL of *instance* and updates
     these records. Then, a new ``URLChangeRecord`` is created for the
-    *instance*.
+    *instance*
     """
-    model = instance.__class__
     new_url = getattr(instance, absolute_url_method)()
-
-    signals.post_save.disconnect(
-        weak=False,
-        sender=model,
-        dispatch_uid=signal_dispatch_uid
-    )
 
     # Don't save a record if the urls are equal, or if the url was previously
     # blank, or the object was just created.
@@ -93,7 +101,7 @@ def track_changed_url(old_url, absolute_url_method, signal_dispatch_uid, instanc
 
     logger.debug(
         "tracking URL change for instance '%s' URL",
-        model.__name__
+        instance.__class__.__name__
     )
 
     # check if the new URL is already in the table and
@@ -114,7 +122,6 @@ def track_changed_url(old_url, absolute_url_method, signal_dispatch_uid, instanc
     record.new_url = new_url
     record.deleted = False
     record.save()
-    return new_url
 
 
 def track_deleted_url(absolute_url_method, instance, **kwargs):
