@@ -89,9 +89,11 @@ def change_urls(old_url, absolute_url_method, instance):
     """
     new_url = getattr(instance, absolute_url_method)()
 
-    # Don't save a record if the urls are equal, or if the url was previously
-    # blank, or the object was just created.
-    if not ((old_url == new_url) or old_url):
+    # Don't save a record if the urls are equal
+    if old_url == new_url:
+        return
+    # Don't save anything, if there is no old_url
+    if not old_url:
         return
 
     # If the new_url is blank, then delete all records for this object

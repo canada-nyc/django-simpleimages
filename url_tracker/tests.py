@@ -124,6 +124,18 @@ class TestTracking(TestCase):
         )
         self.assertEquals(URLChangeRecord.objects.count(), 0)
 
+    def test_track_changed_url_with_None_url(self):
+        instance = self.tracked_model
+        instance.get_absolute_url = lambda: None
+
+        url_tracker.track_changed_url(
+            old_url=None,
+            absolute_url_method='get_absolute_url',
+            instance=instance,
+            signal_dispatch_uid=self.dispatch_uid()
+        )
+        self.assertEquals(URLChangeRecord.objects.count(), 0)
+
     def test_track_changed_url_without_existing_records(self):
         instance = self.tracked_model
         instance.get_absolute_url = lambda: self.new_url
