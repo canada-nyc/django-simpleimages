@@ -2,8 +2,8 @@ from django.db import models
 
 
 class URLChangeRecord(models.Model):
-    old_url = models.CharField(max_length=200, unique=True)
-    new_url = models.CharField(max_length=200, blank=True, null=True)
+    old_url = models.TextField(unique=True)
+    new_url = models.TextField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
     date_changed = models.DateTimeField(auto_now_add=True)
 
