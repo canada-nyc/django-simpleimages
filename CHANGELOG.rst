@@ -2,6 +2,16 @@
 Changelog
 =========
 
+0.1.5
+-----
+
+* Refactored to allow tracking of multiple urls per model.
+
+0.1.4
+-----
+
+* Improved admin look.
+
 0.1.3
 -----
 
