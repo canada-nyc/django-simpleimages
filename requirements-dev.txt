@@ -1,0 +1,2 @@
+django-mini
+django-discover-runner

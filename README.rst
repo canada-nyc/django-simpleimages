@@ -1,130 +1,107 @@
-django-url-tracker
+django-simpleimages
 ==================
 
-.. image:: https://travis-ci.org/elbaschid/django-url-tracker.png
-    :target: https://travis-ci.org/elbaschid/django-url-tracker
+.. image:: https://travis-ci.org/saulshanabrook/django-simpleimages.png
+    :target: https://travis-ci.org/saulshanabrook/django-simpleimages
 
-The ``django-url-tracker`` is meant to be a easy-to-use addition to
-a website to enhance its SEO. This might seem slightly pointless
-as `Cool URIs don't change
-<http://www.w3.org/Provider/Style/URI.html>`_. I don't want to argue
-with that and not changing URL should be the primary goal. In case,
-a URL is changed for some reason, however, this can reflect badly in
-terms of SEO as search engines do not appreciate ending up on a 404
-page when crawling a known URL. To handle these situations nicely
-``django-url-tracker`` keeps track of URL changes and when the *old*
-URL is called provides a permanent redirect (HTTP 301) or a gone
-response (HTTP 410) for deleted URLs.
+``django-simpleimages` is an opinionated Django app which makes it very simple to
+deal transforming images on models, with extremely minimal configuration, as long as:
 
-The tracking is aimed at those URLs that are generated based on
-model fields, e.g. a *slug* field. To start tracking URL changes
-for a particular model, you simply have to register the model
-with ``url_tracker`` and everytime a model is changed or deleted,
-URL changes are recorded.
+* You want to define transformations in the model, and not in the template
+* You want have your own storage backend
+* You want the tranformation to happen when the model saves
 
-The HTTP repsonses that provide an ``HttpResponsePremanentRedirect``
-or ``HttpResponseGone`` are handled similar to the ``flatpages``
-middleware, intercepting ``404`` exceptions and checking for the
-requested URLs in all existing ``URLChangeRecords``. Depending
-on the recorded data the corresponding HTTP response is return or
-a ``404`` is raised when no URL matching the requested one can be
-found.
+If any of the above don't hold true, then this library probably won't work for
+you.  That said, if all of the above do hold true for you, then this app will
+likely be the simplest and best way to apply tranformations to images.
+
 
 Installation
 ------------
 
 Installation is as easy as::
 
-    pip install django-url-tracker
+    pip install django-simpleimages
 
 Done!
 
 Configuration
 -------------
 
-To start using ``url_tracker`` in your project. Just add the
-following two lines to your ``settings.py``:
+settings.py
+^^^^^^^^^^^
 
-1. Add the middleware ``url_tracker.middleware.URLChangePermanentRedirectMiddleware``
-   to the end of  ``MIDDLEWARE_CLASSES`` which should look similar
-   to this afterwards::
+``django-simpleimages`` will use the ``DEFAULT_FILE_STORAGE``::
 
-        MIDDLEWARE_CLASSES = (
-            'django.middleware.common.CommonMiddleware',
-            'django.contrib.sessions.middleware.SessionMiddleware',
-            'django.middleware.csrf.CsrfViewMiddleware',
-            'django.contrib.auth.middleware.AuthenticationMiddleware',
-            'django.contrib.messages.middleware.MessageMiddleware',
-            'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-            'url_tracker.middleware.URLChangePermanentRedirectMiddleware',
+    # If you don't want this to be the global default, just make sure you
+    # specify the an alternative backend.
+    DEFAULT_FILE_STORAGE = 'other.storage.backend'
+
+Usage
+---------------
+
+models.py
+^^^^^^^^^^^
+Here is an example model with a image tranform field.
+
+::
+    import os
+
+    from django.db import models
+    import simpleimages
+
+    class YourModel(models.Model)
+        def large_upload_to(original_file_path):
+            path, extension = os.path.splitext(original_file_path)
+            return path + '_large_file' + extension
+
+        image = simpleimages.fields.ImageTransformField(
+            upload_to="store/product_images",
+            thumbs={
+                'thumb': (
+                    simpleimages.utils.append_to_filename('_thumb'),
+                    simpleimages.transforms.scale(width=20, height=20),
+                )
+                'large': (
+                    large_upload_to,
+                    simpleimages.transforms.scale(width=200),
+                )
+            }
         )
 
-2. Add ``url_tracker`` to your ``INSTALLED_APPS`` ::
+The values in the `thumbs` dictionary tuples that hold two functions. The
+first takes the file path of the original image as its first argument and
+returns the modified path. The second takes the original image as its first
+argument and returns the modifed image to be saved.
 
-       INSTALLED_APPS = (
-            "url_tracker",
-       )
+Accessing the Files
+^^^^^^^^^^^
 
+::
+    YourModel.image # original image, a Django File object
+    YourModel.image.thumbs # Dictionary of thumbs
+    YourModel.image.thumbs['large'] # modified image, Django File object
+    YourModel.image.thumbs['large'].path # Path saved
+    YourModel.image.thumbs['large'].url # Absolute url
 
-
-Now you are able to use ``url_tracker`` within you project. All that
-remains to do is registering a model for tracking.
-
-Tracking A Model
-----------------
-
-This is just a simple example of how to track a model. Let's assume we
-have a model ``Project`` that hold details on this particular project and
-is made available at the URL ``http://www.example.com/project/some-project/``.
-The project's URL is based on the ``SlugField`` of our model. The model could
-look like this::
-
-    class Project(models.Model):
-        name = models.CharField(max_length=20)
-        slug = models.SlugField(max_length=20)
-        description = models.CharField(max_length=500)
-
-
-I will not go into details of how to create the slug as I think this is
-common practise. So for now we just assume that ``slug`` is populated
-automatically from ``name``. One other thing, however, is required for
-the tracker to work, the ``get_absolute_url`` method. Let's add this to
-the model::
-
-    class Project(models.Model):
-        ...
-
-        @models.permalink
-        def get_absolute_url(self):
-            return ('project-detail', (), {'slug': self.slug})
-
-And now the missing link to actually start tracking URL changes is adding
-the following command to the bottom of the class definition, or the file
-for that matter::
-
-    import url_tracker
-    url_tracker.track_url_changes_for_model(Project)
-
-You are done. If you go to the admin interface, create a new project
-and then change its slug (which changes its URL) you will see a new
-``URLChangeRecord`` reflecting the change. Opening the ``old_url`` should
-then redirect you to the ``new_url``.
 
 Contributing
 ------------
 
 If you find issues or would like to see a feature suppored, head over to
 the `issues section:
-<https://github.com/tangentlabs/django-url-tracker/issues>`_ and report it.
+<https://github.com/saulshanabrook/django-simpleimages/issues>`_ and report it.
 
 To contribute code in any form, fork the `github repository:
-<https://github.com/tangentlabs/django-url-tracker>`_ and clone it locally.
+<https://github.com/saulshanabrook/django-simpleimages>`_ and clone it locally.
 Create a new branch for your feature::
 
     git commit -b feature/whatever-you-like
 
-push the finished feature to github and open a pull request form the branch.
+Then make sure all the tests past (and write new ones for any new features)::
+    pip install -r requirements-dev.txt
+    pip install -e .
+    django-mini.py -a simpleimages --test-runner 'discover_runner.DiscoverRunner' test
 
-If you make a change to models.py that requires a database migration,
-use `python manage.py schemamigration url_tracker --auto` to create a south
-migration.
+
+Then push the finished feature to github and open a pull request form the branch.

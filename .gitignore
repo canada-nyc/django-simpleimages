@@ -1,8 +1,2 @@
-*sw[po]
-*.log
-*.pot
 *.py[co]
-
-htmlcov/
-dist/
-django_url_tracker.egg-info/
+*.egg-info
