@@ -4,7 +4,7 @@ django-simpleimages
 .. image:: https://travis-ci.org/saulshanabrook/django-simpleimages.png
     :target: https://travis-ci.org/saulshanabrook/django-simpleimages
 
-``django-simpleimages` is an opinionated Django app which makes it very simple to
+``django-simpleimages`` is an opinionated Django app which makes it very simple to
 deal transforming images on models, with extremely minimal configuration, as long as:
 
 * You want to define transformations in the model, and not in the template
@@ -43,9 +43,8 @@ Usage
 
 models.py
 ^^^^^^^^^^^
-Here is an example model with a image tranform field.
+Here is an example model with a image tranform field::
 
-::
     import os
 
     from django.db import models
@@ -80,6 +79,7 @@ Accessing the Files
 ^^^^^^^^^^^
 
 ::
+
     YourModel.image # original image, a Django FieldFile object
     YourModel.image.thumbs # Dictionary of thumbs
     YourModel.image.thumbs['large'] # modified image, Django FieldFile object
@@ -101,6 +101,7 @@ Create a new branch for your feature::
     git commit -b feature/whatever-you-like
 
 Then make sure all the tests past (and write new ones for any new features)::
+
     pip install -r requirements-dev.txt
     pip install -e .
     django-mini.py -a simpleimages --test-runner 'discover_runner.DiscoverRunner' test
