@@ -32,7 +32,9 @@ Configuration
 settings.py
 ^^^^^^^^^^^
 
-``django-simpleimages`` will use the ``DEFAULT_FILE_STORAGE``::
+``django-simpleimages`` will use the ``DEFAULT_FILE_STORAGE``
+
+.. code-block:: python
 
     # If you don't want this to be the global default, just make sure you
     # specify the an alternative backend.
@@ -43,7 +45,9 @@ Usage
 
 models.py
 ^^^^^^^^^^^
-Here is an example model with a image tranform field::
+Here is an example model with a image tranform field
+
+.. code-block:: python
 
     import os
 
@@ -78,7 +82,7 @@ argument and returns the modifed image to be saved.
 Accessing the Files
 ^^^^^^^^^^^
 
-::
+.. code-block:: python
 
     YourModel.image # original image, a Django FieldFile object
     YourModel.image.thumbs # Dictionary of thumbs
