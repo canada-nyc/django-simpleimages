@@ -22,6 +22,7 @@ Installation
 Installation is as easy as::
 
     pip install django-simpleimages
+    pip install pillow # or any other version of PIL
 
 Done!
 
@@ -50,7 +51,8 @@ Here is an example model with a image tranform field.
     from django.db import models
     import simpleimages
 
-    class YourModel(models.Model)
+
+    class YourModel(models.Model):
         def large_upload_to(original_file_path):
             path, extension = os.path.splitext(original_file_path)
             return path + '_large_file' + extension
@@ -78,9 +80,9 @@ Accessing the Files
 ^^^^^^^^^^^
 
 ::
-    YourModel.image # original image, a Django File object
+    YourModel.image # original image, a Django FieldFile object
     YourModel.image.thumbs # Dictionary of thumbs
-    YourModel.image.thumbs['large'] # modified image, Django File object
+    YourModel.image.thumbs['large'] # modified image, Django FieldFile object
     YourModel.image.thumbs['large'].path # Path saved
     YourModel.image.thumbs['large'].url # Absolute url
 
