@@ -4,6 +4,10 @@ django-simpleimages
 .. image:: https://travis-ci.org/saulshanabrook/django-simpleimages.png
     :target: https://travis-ci.org/saulshanabrook/django-simpleimages
 
+.. image:: https://coveralls.io/repos/saulshanabrook/django-simpleimages/badge.png?branch=master
+    :target: https://coveralls.io/r/saulshanabrook/django-simpleimages
+
+
 ``django-simpleimages`` is an opinionated Django app which makes it very simple to
 deal transforming images on models, with extremely minimal configuration, as long as:
 
