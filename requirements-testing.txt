@@ -1,0 +1,4 @@
+django-mini
+django-discover-runner
+pillow
+coveralls

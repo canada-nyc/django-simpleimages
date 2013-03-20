@@ -3,7 +3,7 @@ python:
   - "2.7"
   - "2.6"
 install:
-  - make install_dev
+  - pip install -r requirements-testing.txt
   - pip install -U django$DJANGO_VERSION
 script:
   - make test

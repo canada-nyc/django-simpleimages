@@ -1,5 +1,5 @@
 django-simpleimages
-==================
+===================
 
 .. image:: https://travis-ci.org/saulshanabrook/django-simpleimages.png
     :target: https://travis-ci.org/saulshanabrook/django-simpleimages
@@ -70,25 +70,25 @@ Here is an example model that will create transformed images on save.
 
     simpleimages.track_model(YourModel)
 
-`simpleimages.track_model` is called with the model to track.
+``simpleimages.track_model`` is called with the model to track.
 
 
-The model should have a field called `transformed_fields` which is a
+The model should have a field called ``transformed_fields`` which is a
 dictionary mapping original image fields to transformed fields.
 Each of the original image keys maps to a dictionary which maps transformed
 fields to transformations. The transformations are function that
-take an image, from the `file` attribute of the original field, and return a
-transformed instance of `django.core.files.File:
-<https://docs.djangoproject.com/en/dev/ref/files/file/#django.core.files.File>`_
-, not Python’s built-in file object.
+take an image, from the ``file`` attribute of the original field, and return a
+transformed instance of `django.core.files.File
+<https://docs.djangoproject.com/en/dev/ref/files/file/#django.core.files.File>`_,
+not Python's built-in file object.
 
 Management Command
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 Since the images are only transformed on the save of the model, if you change
 a transform, all the models will not be updated until you resave them.
 If you want to retransform all the images in a model or app use the
-`retransform command.
+``retransform`` command.
 
 .. code-block:: bash
 
@@ -117,8 +117,13 @@ Create a new branch for your feature::
 
 Then make sure all the tests past (and write new ones for any new features)::
 
-    make install_dev
-    make test
+    pip install -e .
+    pip install -r requirements-dev.txt
+    coverage run --branch --source=simpleimages -m django-mini -a simpleimages -a simpleimages.test --test-runner 'discover_runner.DiscoverRunner' test
+
+Check if the README.rst looks right::
+
+    restview -e 'python setup.py --long-description'
 
 Then push the finished feature to github and open a pull request form the branch.
 
@@ -126,7 +131,7 @@ New Release
 ^^^^^^^^^^^
 To create a new release:
 
-1. Add changes to `CHANGES.txt`
-2. Change version in `setup.py
-3. `python setup.py register`
-4. `python setup.py sdist upload`
+1. Add changes to ``CHANGES.txt``
+2. Change version in ``setup.py``
+3. ``python setup.py register``
+4. ``python setup.py sdist upload``

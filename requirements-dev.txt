@@ -1,5 +1,4 @@
-django-mini
-django-discover-runner
-pillow
-coveralls
+-r requirements-testing.txt
+
 distribute
+restview
