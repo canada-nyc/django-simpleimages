@@ -1,4 +1,4 @@
-django-mini
-django-discover-runner
-pillow
-coveralls
+django-mini==0.4
+django-discover-runner==0.3
+Pillow==1.7.8
+coveralls==0.1.1
