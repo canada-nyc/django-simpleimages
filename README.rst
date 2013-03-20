@@ -30,6 +30,9 @@ Installation is as easy as::
 
 Done!
 
+Note: ``django-simpleimages`` requires Django>=1.5 because it needs to use
+the ``update_fields`` argument for model saving, which was implemented in 1.5.
+
 
 Usage
 ---------------
