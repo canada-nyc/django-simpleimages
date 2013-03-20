@@ -25,7 +25,7 @@ def scale(height=None, width=None):
 def pil_image_from_django_file(django_file):
     if not isinstance(django_file, File):
         raise TypeError(
-            'image is a {}, not a django File'.format(type(django_file))
+            'image is a {0}, not a django File'.format(type(django_file))
         )
     if not django_file.file:
         raise ValueError(
@@ -38,7 +38,7 @@ def pil_image_from_django_file(django_file):
 def django_file_from_pil_image(transformed_pil_image, file_name):
     if not isinstance(transformed_pil_image, Image.Image):
         raise TypeError(
-            'image is a {}, not a PIL Image'.format(type(transformed_pil_image))
+            'image is a {0}, not a PIL Image'.format(type(transformed_pil_image))
         )
     temp_io = StringIO()
     transformed_pil_image.save(temp_io, format='JPEG')

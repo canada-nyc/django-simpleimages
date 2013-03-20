@@ -3,12 +3,8 @@ python:
   - "2.7"
   - "2.6"
 install:
-  - pip install --no-deps -e .
+  - pip install -q -e .
   - pip install -q --use-mirrors -r requirements-testing.txt
-  - pip install -q --use-mirrors -U $DJANGO_VERSION
 script:
   - coverage run --branch --source=simpleimages -m django-mini -a simpleimages -a simpleimages.test --test-runner 'discover_runner.DiscoverRunner' test
   - coveralls
-env:
-  - DJANGO_VERSION="django>=1.5,<1.6"
-  - DJANGO_VERSION="git+git://github.com/django/django.git@master"
