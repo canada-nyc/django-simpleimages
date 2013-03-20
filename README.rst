@@ -7,9 +7,9 @@ django-simpleimages
 ``django-simpleimages`` is an opinionated Django app which makes it very simple to
 deal transforming images on models, with extremely minimal configuration, as long as:
 
-* You want to define transformations in the model, and not in the template
-* You want have your own storage backend
-* You want the tranformation to happen when the model saves
+* You want to define sizes in the model and not dynamically in the template
+* You provide your own storage backend
+* You want the transformation to happen when the model saves
 
 If any of the above don't hold true, then this library probably won't work for
 you.  That said, if all of the above do hold true for you, then this app will
@@ -26,69 +26,76 @@ Installation is as easy as::
 
 Done!
 
-Configuration
--------------
-
-settings.py
-^^^^^^^^^^^
-
-``django-simpleimages`` will use the ``DEFAULT_FILE_STORAGE``
-
-.. code-block:: python
-
-    # If you don't want this to be the global default, just make sure you
-    # specify the an alternative backend.
-    DEFAULT_FILE_STORAGE = 'other.storage.backend'
 
 Usage
 ---------------
 
 models.py
 ^^^^^^^^^^^
-Here is an example model with a image tranform field
+Here is an example model that will create transformed images on save.
 
 .. code-block:: python
-
-    import os
 
     from django.db import models
     import simpleimages
 
 
     class YourModel(models.Model):
-        def large_upload_to(original_file_path):
-            path, extension = os.path.splitext(original_file_path)
-            return path + '_large_file' + extension
-
-        image = simpleimages.fields.ImageTransformField(
-            upload_to="store/product_images",
-            thumbs={
-                'thumb': (
-                    simpleimages.utils.append_to_filename('_thumb'),
-                    simpleimages.transforms.scale(width=20, height=20),
-                )
-                'large': (
-                    large_upload_to,
-                    simpleimages.transforms.scale(width=200),
-                )
-            }
+        image = models.ImageField(
+            upload_to='images/'
+        )
+        thumbnail_image = models.ImageField(
+            blank=True,
+            null=True,
+            editable=False,
+            upload_to='transformed_images/thumbnails/'
+        )
+        large_image = models.ImageField(
+            blank=True,
+            null=True,
+            editable=False,
+            upload_to='transformed_images/large/'
         )
 
-The values in the `thumbs` dictionary tuples that hold two functions. The
-first takes the file path of the original image as its first argument and
-returns the modified path. The second takes the original image as its first
-argument and returns the modifed image to be saved.
+        transformed_fields = {
+            'image': {
+                'thumbnail_image': simpleimages.transforms.scale(width=10),
+                'large_image': simpleimages.transforms.scale(width=200),
+            }
+        }
 
-Accessing the Files
-^^^^^^^^^^^
+    simpleimages.track_model(YourModel)
 
-.. code-block:: python
+`simpleimages.track_model` is called with the model to track.
 
-    YourModel.image # original image, a Django FieldFile object
-    YourModel.image.thumbs # Dictionary of thumbs
-    YourModel.image.thumbs['large'] # modified image, Django FieldFile object
-    YourModel.image.thumbs['large'].path # Path saved
-    YourModel.image.thumbs['large'].url # Absolute url
+
+The model should have a field called `transformed_fields` which is a
+dictionary mapping original image fields to transformed fields.
+Each of the original image keys maps to a dictionary which maps transformed
+fields to transformations. The transformations are function that
+take an image, from the `file` attribute of the original field, and return a
+transformed instance of `django.core.files.File:
+<https://docs.djangoproject.com/en/dev/ref/files/file/#django.core.files.File>`_
+, not Python’s built-in file object.
+
+Management Command
+^^^^^^^^
+
+Since the images are only transformed on the save of the model, if you change
+a transform, all the models will not be updated until you resave them.
+If you want to retransform all the images in a model or app use the
+`retransform command.
+
+.. code-block:: bash
+
+    # re-transforms and saves all models. If an app is specified then only
+    # the models in that app will be re transformed. If a model is specified
+    # then only that model in that app will be retransformed. If a field is
+    # specified within that model, then that field will be recalculated.
+    # If the field is a transformed field, then it will resave that transformed
+    # field. If it is a regular field, it will save all the transformations
+    # for that field.
+    python manage.py retransform app.model.[field]
 
 
 Contributing
@@ -106,9 +113,16 @@ Create a new branch for your feature::
 
 Then make sure all the tests past (and write new ones for any new features)::
 
-    pip install -r requirements-dev.txt
-    pip install -e .
-    django-mini.py -a simpleimages --test-runner 'discover_runner.DiscoverRunner' test
-
+    make install_dev
+    make test
 
 Then push the finished feature to github and open a pull request form the branch.
+
+New Release
+^^^^^^^^^^^
+To create a new release:
+
+1. Add changes to `CHANGES.txt`
+2. Change version in `setup.py
+3. `python setup.py register`
+4. `python setup.py sdist upload`

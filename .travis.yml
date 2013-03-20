@@ -1,10 +1,16 @@
 language: python
 python:
   - "2.7"
-# command to install dependencies
+  - "2.6"
 install:
-  - "pip install -e ."
-  - "pip install -r requirements-dev.txt"
-# command to run tests
+  - make install_dev
+  - pip install -U django$DJANGO_VERSION
 script:
-  - django-mini.py -a simpleimages --test-runner 'discover_runner.DiscoverRunner' test
+  - make test
+  - coveralls
+env:
+  - DJANGO_VERSION=">=1.1,<1.2"
+  - DJANGO_VERSION=">=1.2,<1.3"
+  - DJANGO_VERSION=">=1.3,<1.4"
+  - DJANGO_VERSION=">=1.4,<1.5"
+  - DJANGO_VERSION=">=1.5,<1.6"

@@ -1,2 +1,7 @@
 *.py[co]
 *.egg-info
+.coverage
+
+.DS_Store
+/dist/
+/MANIFEST
