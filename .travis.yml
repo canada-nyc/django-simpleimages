@@ -3,6 +3,7 @@ python:
   - "2.7"
   - "2.6"
 install:
+  - pip install --no-deps -e .
   - pip install -q --use-mirrors -r requirements-testing.txt
   - pip install -q --use-mirrors -U django$DJANGO_VERSION
 script:
