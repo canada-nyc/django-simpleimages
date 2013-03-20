@@ -28,10 +28,10 @@ Installation is as easy as::
     pip install django-simpleimages
     pip install pillow # or any other version of PIL
 
-Done!
-
 Note: ``django-simpleimages`` requires Django>=1.5 because it needs to use
 the ``update_fields`` argument for model saving, which was implemented in 1.5.
+
+Then add ``simpleimages`` to your ``INSTALLED_APPS``.
 
 
 Usage
