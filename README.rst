@@ -1,6 +1,3 @@
-**NOTE**: I realized that `sorl-thumbnail
-<https://github.com/sorl/sorl-thumbnail>`_ is really just much better. Use that.
-
 django-simpleimages
 ===================
 
