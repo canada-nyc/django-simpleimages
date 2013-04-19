@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-simpleimages',
-    version='0.1.4',
+    version='0.1.5',
     author='Saul Shanabrook',
     author_email='s.shanabrook@gmail.com',
     packages=['simpleimages', 'simpleimages.test'],

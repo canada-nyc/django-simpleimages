@@ -42,8 +42,9 @@ def perform_transformation(instances, field_names=None):
                         save=False
                     )
                 else:
-                    destination_field.delete(
-                        save=False
-                    )
+                    if destination_field:
+                        destination_field.delete(
+                            save=False
+                        )
                 updated_fields.append(destination_field_name)
         instance.save(update_fields=updated_fields)

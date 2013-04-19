@@ -1,3 +1,4 @@
+v0.1.5, 04/18/13 -- Check first if image exists, before deleting
 v0.1.4, 04/18/13 -- Added support for non-image files
 v0.1.3, 03/20/13 -- Added instruction to add to INSTALLED_APPS
 v0.1.2, 03/20/13 -- Added requirement for Django 1.5.
