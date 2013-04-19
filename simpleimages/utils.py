@@ -1,3 +1,9 @@
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+
 def perform_transformation(instances, field_names=None):
     '''
     Transforms the images, from the field_name to any fields that are transformed
@@ -18,11 +24,26 @@ def perform_transformation(instances, field_names=None):
 
             for destination_field_name, transformation in destination_dict.items():
                 destination_field = getattr(instance, destination_field_name)
-                new_image = transformation(original_field)
-                destination_field.save(
-                    original_name,
-                    new_image,
-                    save=False
-                )
+                try:
+                    new_image = transformation(original_field)
+                except:
+                    new_image = None
+                    logger.error(
+                        'The image on {} cannot be transformed from {} -> {}. None has been saved to the resulting field'.format(
+                            instance,
+                            original_field_name,
+                            destination_field_name
+                        )
+                    )
+                if new_image:
+                    destination_field.save(
+                        original_name,
+                        new_image,
+                        save=False
+                    )
+                else:
+                    destination_field.delete(
+                        save=False
+                    )
                 updated_fields.append(destination_field_name)
         instance.save(update_fields=updated_fields)

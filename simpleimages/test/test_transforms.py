@@ -3,6 +3,7 @@ from PIL import Image
 from django.test import TestCase
 from django.core.files.images import get_image_dimensions
 from django.core.files import File
+from django.core.files.base import ContentFile
 
 from simpleimages.transforms import (scale, pil_image_from_django_file,
                                      django_file_from_pil_image)
@@ -16,6 +17,11 @@ class ConversionTest(TestCase):
         pil_image = pil_image_from_django_file(django_image)
         self.assertIsInstance(pil_image, Image.Image)
         self.assertItemsEqual(pil_image.size, [100, 100])
+
+    def test_pil_value_error(self):
+        django_file = ContentFile(u'not an image')
+        with self.assertRaises(ValueError):
+            pil_image_from_django_file(django_file)
 
     def test_django_from_pil(self):
         pil_image = utils.pil_image(width=100, height=100)
