@@ -29,7 +29,7 @@ def perform_transformation(instances, field_names=None):
                 except:
                     new_image = None
                     logger.error(
-                        'The image on {} cannot be transformed from {} -> {}. None has been saved to the resulting field'.format(
+                        'The image on {0} cannot be transformed from {1} -> {2}. None has been saved to the resulting field'.format(
                             instance,
                             original_field_name,
                             destination_field_name
