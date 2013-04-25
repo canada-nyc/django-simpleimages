@@ -8,7 +8,10 @@ from django.core.files import File
 
 def scale(height=None, width=None):
     def scale_image_function(django_file):
-        pil_image = pil_image_from_django_file(django_file)
+        try:
+            pil_image = pil_image_from_django_file(django_file)
+        except IOError:
+            return
 
         max_height = height or pil_image.size[0]
         max_width = width or pil_image.size[1]
@@ -34,14 +37,8 @@ def pil_image_from_django_file(django_file):
             'the django file has no file saved to it.'
         )
     django_file.open()
-    try:
-        pil_image = Image.open(django_file.file)
-    except IOError:
-        raise ValueError(
-            'the django file is can not be parsed by pil'
-        )
-    else:
-        return pil_image
+    pil_image = Image.open(django_file.file)
+    return pil_image
 
 
 def django_file_from_pil_image(transformed_pil_image, file_name):

@@ -18,11 +18,6 @@ class ConversionTest(TestCase):
         self.assertIsInstance(pil_image, Image.Image)
         self.assertItemsEqual(pil_image.size, [100, 100])
 
-    def test_pil_value_error(self):
-        django_file = ContentFile(u'not an image')
-        with self.assertRaises(ValueError):
-            pil_image_from_django_file(django_file)
-
     def test_django_from_pil(self):
         pil_image = utils.pil_image(width=100, height=100)
         django_file = django_file_from_pil_image(pil_image, 'image.jpg')
@@ -53,3 +48,9 @@ class ScaleTest(utils.RemoveStorage, TestCase):
         new_height, new_width = get_image_dimensions(new_image)
         self.assertEqual(new_height, 100)
         self.assertEqual(new_width, 100)
+
+    def test_error_returns_none(self):
+        old_image = ContentFile('not an image file')
+        transform = scale(width=200)
+        new_image = transform(old_image)
+        self.assertFalse(new_image)

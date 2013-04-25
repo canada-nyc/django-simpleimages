@@ -24,17 +24,7 @@ def perform_transformation(instances, field_names=None):
 
             for destination_field_name, transformation in destination_dict.items():
                 destination_field = getattr(instance, destination_field_name)
-                try:
-                    new_image = transformation(original_field)
-                except:
-                    new_image = None
-                    logger.error(
-                        'The image on {0} cannot be transformed from {1} -> {2}. None has been saved to the resulting field'.format(
-                            instance,
-                            original_field_name,
-                            destination_field_name
-                        )
-                    )
+                new_image = transformation(original_field)
                 if new_image:
                     destination_field.save(
                         original_name,
@@ -42,6 +32,13 @@ def perform_transformation(instances, field_names=None):
                         save=False
                     )
                 else:
+                    logger.error(
+                        'The image on {0} was not transformed from {1} -> {2}'.format(
+                            instance,
+                            original_field_name,
+                            destination_field_name
+                        )
+                    )
                     if destination_field:
                         destination_field.delete(
                             save=False
