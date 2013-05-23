@@ -20,6 +20,22 @@ you.  That said, if all of the above do hold true for you, then this app will
 likely be the simplest and best way to apply tranformations to images.
 
 
+Why don't you just use _?
+-------------------------
+I started out using sorl-thumbnail_. I ran into issues with cache and database access. Along with
+external file access. I think looked to django-imagekit_. That project is much more advanced and
+allows a great flexibility on every bit of the image generation process. However, what I was
+looking for was a much simpler tool. Simpler in design, not simpler to implement on my project.
+I wanted to be able to understand exactly what the potential performance bottlenecks might be
+for using that image library. So this library fills only the simplest of needs. It will just
+create and save a new image, based on a field in the model, when the model saves, onto another field
+in the model. All caching and file access is left to the file storage API.
+
+
+.. _sorl-thumbnail: https://github.com/sorl/sorl-thumbnail
+.. _django-imagekit: https://github.com/jdriscoll/django-imagekit
+
+
 Installation
 ------------
 
