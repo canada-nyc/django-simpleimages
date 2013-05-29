@@ -54,7 +54,6 @@ def django_file_from_pil_image(transformed_pil_image, file_name):
     transformed_pil_image.save(
         temp_io,
         format='JPEG',
-        optimize=True,
         quality=85,
     )
     temp_io.seek(0)

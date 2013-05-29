@@ -1,3 +1,4 @@
+v0.2.0, 05/29/13 -- Don't save with optomize either, also encounters same error
 v0.1.9, 05/29/13 -- Don't save as progressive, because encounters errors
 v0.1.8, 05/29/13 -- Convert image to JPEG colorspace and save with higher quality and progressive
 v0.1.7, 05/29/13 -- Transform post save, addressed force_update error
