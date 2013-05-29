@@ -44,7 +44,9 @@ def pil_image_from_django_file(django_file):
 def django_file_from_pil_image(transformed_pil_image, file_name):
     if not isinstance(transformed_pil_image, Image.Image):
         raise TypeError(
-            'image is a {0}, not a PIL Image'.format(type(transformed_pil_image))
+            'image is a {0}, not a PIL Image'.format(
+                type(transformed_pil_image)
+            )
         )
     temp_io = StringIO()
     if transformed_pil_image.mode not in ('L', 'RGB'):
@@ -54,7 +56,6 @@ def django_file_from_pil_image(transformed_pil_image, file_name):
         format='JPEG',
         optimize=True,
         quality=85,
-        progressive=True
     )
     temp_io.seek(0)
     django_file = InMemoryUploadedFile(
