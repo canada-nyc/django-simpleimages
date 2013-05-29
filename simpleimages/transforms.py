@@ -1,6 +1,7 @@
 from StringIO import StringIO
+from exceptions import IOError
 
-from PIL import Image
+from PIL import Image, ImageFile
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files import File
@@ -51,6 +52,23 @@ def django_file_from_pil_image(transformed_pil_image, file_name):
     temp_io = StringIO()
     if transformed_pil_image.mode not in ('L', 'RGB'):
         transformed_pil_image = transformed_pil_image.convert("RGB")
+    try:
+        transformed_pil_image.save(
+            temp_io,
+            "JPEG",
+            quality=85,
+            optimize=True,
+            progressive=True
+        )
+    except IOError:
+        ImageFile.MAXBLOCK = transformed_pil_image.size[0] * transformed_pil_image.size[1]
+        transformed_pil_image.save(
+            temp_io,
+            "JPEG",
+            quality=85,
+            optimize=True,
+            progressive=True
+        )
     transformed_pil_image.save(
         temp_io,
         format='JPEG',
