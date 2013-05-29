@@ -138,7 +138,7 @@ Then make sure all the tests past (and write new ones for any new features)::
 
     pip install -e .
     pip install -r requirements-dev.txt
-    coverage run --branch --source=simpleimages -m django-mini -a simpleimages -a simpleimages.test --test-runner 'discover_runner.DiscoverRunner' test
+    python django-mini.py -a simpleimages -a simpleimages.test --test-runner 'discover_runner.DiscoverRunner' test
 
 Check if the README.rst looks right::
 

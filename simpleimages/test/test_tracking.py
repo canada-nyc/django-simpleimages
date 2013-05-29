@@ -61,3 +61,16 @@ class ImageTransformFieldTest(utils.RemoveStorage, TestCase):
             self.model.thumbnail.width,
             10,
         )
+
+    def test_image_saved_before_creation(self):
+        unsaved_model = TestModel()
+        unsaved_model.image.save(
+            self.image_name,
+            utils.django_image(
+                *self.default_dimensions,
+                name=self.image_name
+            )
+        )
+        self.assertTrue(
+            unsaved_model.thumbnail,
+        )
