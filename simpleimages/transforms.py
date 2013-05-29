@@ -47,7 +47,15 @@ def django_file_from_pil_image(transformed_pil_image, file_name):
             'image is a {0}, not a PIL Image'.format(type(transformed_pil_image))
         )
     temp_io = StringIO()
-    transformed_pil_image.save(temp_io, format='JPEG')
+    if transformed_pil_image.mode not in ('L', 'RGB'):
+        transformed_pil_image = transformed_pil_image.convert("RGB")
+    transformed_pil_image.save(
+        temp_io,
+        format='JPEG',
+        optimize=True,
+        quality=85,
+        progressive=True
+    )
     temp_io.seek(0)
     django_file = InMemoryUploadedFile(
         file=temp_io,

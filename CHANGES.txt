@@ -1,5 +1,6 @@
-v0.1.7, 04/18/13 -- Transform post save, addressed force_update error
-v0.1.6, 04/18/13 -- Reasons why to use library added to readme, moved error handling transform function.
+v0.1.8, 05/29/13 -- Convert image to JPEG colorspace and save with higher quality and progressive
+v0.1.7, 05/29/13 -- Transform post save, addressed force_update error
+v0.1.6, 05/29/13 -- Reasons why to use library added to readme, moved error handling transform function.
 v0.1.5, 04/18/13 -- Check first if image exists, before deleting
 v0.1.4, 04/18/13 -- Added support for non-image files
 v0.1.3, 03/20/13 -- Added instruction to add to INSTALLED_APPS
