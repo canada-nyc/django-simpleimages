@@ -24,8 +24,8 @@ class ConversionTest(TestCase):
         self.assertIsInstance(django_file, File)
 
     def test_huge_image_django_from_pil(self):
-        pil_image = utils.pil_image(width=5000, height=5000)
-        django_file = django_file_from_pil_image(pil_image, 'image.jpg')
+        huge_pil_image = utils.pil_image(width=5000, height=5000)
+        django_file = django_file_from_pil_image(huge_pil_image, 'image.jpg')
         self.assertIsInstance(django_file, File)
 
 
