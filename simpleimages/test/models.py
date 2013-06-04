@@ -11,7 +11,14 @@ class TestModel(models.Model):
         blank=True,
         null=True,
         editable=False,
-        upload_to='testing/thumbnails/'
+        upload_to='testing/thumbnails/',
+        width_field='thumbnail_width'
+    )
+
+    thumbnail_width = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        editable=False,
     )
 
     transformed_fields = {

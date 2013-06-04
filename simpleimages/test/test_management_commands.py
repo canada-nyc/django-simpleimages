@@ -53,3 +53,11 @@ class ReTransformImagesTest(utils.RemoveStorage, TestCase):
             self.model_non_cached.thumbnail.width,
             10,
         )
+
+    def test_retransform_save_width_field(self):
+        call_command('retransform', 'test.TestModel.image')
+        self.model_non_cached = TestModel.objects.get(pk=self.model.pk)
+        self.assertEqual(
+            self.model_non_cached.thumbnail_width,
+            10,
+        )
