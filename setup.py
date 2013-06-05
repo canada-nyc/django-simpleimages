@@ -1,11 +1,12 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
 
 setup(
     name='django-simpleimages',
-    version='0.2.2',
+    version='0.2.3',
     author='Saul Shanabrook',
     author_email='s.shanabrook@gmail.com',
-    packages=['simpleimages', 'simpleimages.test'],
+    packages=find_packages(),
     url='https://www.github.com/saulshanabrook/django-simpleimages',
     license='LICENSE.txt',
     description='Opinionated Django image transforms on models',
