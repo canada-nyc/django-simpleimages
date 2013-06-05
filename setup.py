@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-simpleimages',
-    version='0.2.1',
+    version='0.2.2',
     author='Saul Shanabrook',
     author_email='s.shanabrook@gmail.com',
     packages=['simpleimages', 'simpleimages.test'],
@@ -13,4 +13,5 @@ setup(
     install_requires=[
         "Django >= 1.5",
     ],
+    zip_safe=False  # so that django finds management commands
 )
