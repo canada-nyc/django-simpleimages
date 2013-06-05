@@ -101,18 +101,3 @@ class PerformTransformationTest(utils.RemoveStorage, TestCase):
 
         self.assertFalse(self.model.thumbnail)
         self.assertFalse(self.non_cached_model.thumbnail)
-
-    def test_transform_error_deletes_file(self):
-        perform_transformation([self.model], field_names=['image'])
-        self.model.image.save(
-            self.image_name,
-            self.non_image_file
-        )
-        perform_transformation([self.model], field_names=['image'])
-        self.non_cached_model = TestModel.objects.get(pk=self.model.pk)
-
-        self.assertTrue(self.model.image)
-        self.assertTrue(self.non_cached_model.image)
-
-        self.assertFalse(self.model.thumbnail)
-        self.assertFalse(self.non_cached_model.thumbnail)
