@@ -17,7 +17,7 @@ def perform_transformation(instances, field_names=None):
         transformed_fields_dict = instance.transformed_fields
         for original_field_name, destination_dict in transformed_fields_dict.items():
             if field_names and not original_field_name in field_names:
-                logger.debug('"{0}" field field isnt being transformed'.format(
+                logger.debug('"{0}" field isnt being transformed'.format(
                     original_field_name
                 ))
                 break

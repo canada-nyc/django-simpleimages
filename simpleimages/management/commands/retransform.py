@@ -19,14 +19,19 @@ class Command(BaseCommand):
             self.stdout.write('app: {0}'.format(app_name))
             self.stdout.write('model: {0}'.format(model_name))
             if field_name:
-                self.stdout.write('model: {0}'.format(field_name))
+                self.stdout.write('field: {0}'.format(field_name))
             model = get_model(app_name, model_name)
             if not model:
                 raise CommandError('That model-app pair can not be found')
             instances = model._default_manager.all()
             self.stdout.write('Transforming {0} models'.format(len(instances)))
 
-            utils.perform_transformation(
-                instances=instances,
-                field_names=[field_name]
-            )
+            if field_name:
+                utils.perform_transformation(
+                    instances=instances,
+                    field_names=[field_name]
+                )
+            else:
+                utils.perform_transformation(
+                    instances=instances,
+                )
