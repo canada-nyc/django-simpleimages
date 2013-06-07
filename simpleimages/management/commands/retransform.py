@@ -24,7 +24,9 @@ class Command(BaseCommand):
             if not model:
                 raise CommandError('That model-app pair can not be found')
             instances = model._default_manager.all()
-            self.stdout.write('Transforming {0} models'.format(len(instances)))
+            self.stdout.write(
+                'Transforming {0} models'.format(instances.count())
+            )
 
             if field_name:
                 utils.perform_transformation(
