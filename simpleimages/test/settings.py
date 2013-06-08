@@ -23,4 +23,5 @@ NOSE_ARGS = [
 
     '--with-coverage',
     '--cover-package=simpleimages',
+    '--cover-branches'
 ]
