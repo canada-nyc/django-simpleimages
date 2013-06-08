@@ -1,4 +1,5 @@
 import logging
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -47,6 +48,12 @@ def perform_transformation(instances, field_names=None):
                 new_image = transformation(original_field)
                 try:
                     logger.debug('Saving new image')
+                    # So that only the image file name is saved.
+                    # When using django-storages s3boto the name of the
+                    # image returns the whole path. So by using dirname
+                    # it will only use the actual file name when saving the
+                    # transformed file
+                    destination_name = os.path.dirname(original_name)
                     destination_field.save(
                         original_name,
                         new_image,
