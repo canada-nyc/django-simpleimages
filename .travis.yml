@@ -3,8 +3,8 @@ python:
   - "2.7"
   - "2.6"
 install:
-  - pip install -q -e .
-  - pip install -q --use-mirrors -r requirements-testing.txt
+  - pip install -e .
+  - pip install -r requirements-testing.txt
 script:
   - django-admin.py test
   - coveralls
