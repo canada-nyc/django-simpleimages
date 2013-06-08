@@ -141,7 +141,7 @@ Then make sure all the tests past (and write new ones for any new features)::
 
     pip install -e .
     pip install -r requirements-dev.txt
-    python django-mini.py -a simpleimages -a simpleimages.test --test-runner 'discover_runner.DiscoverRunner' test
+    django-admin.py test --settings=simpleimages.test.settings
 
 Check if the README.rst looks right::
 
