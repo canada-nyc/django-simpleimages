@@ -101,3 +101,7 @@ class PerformTransformationTest(utils.RemoveStorage, TestCase):
 
         self.assertFalse(self.model.thumbnail)
         self.assertFalse(self.non_cached_model.thumbnail)
+
+    def test_save_path(self):
+        perform_transformation([self.model])
+        self.assertNotIn('originals', self.model.thumbnail.path)

@@ -5,13 +5,13 @@ from ..transforms import scale
 
 class TestModel(models.Model):
     image = models.ImageField(
-        upload_to='testing/'
+        upload_to='originals/'
     )
     thumbnail = models.ImageField(
         blank=True,
         null=True,
         editable=False,
-        upload_to='testing/thumbnails/',
+        upload_to='thumbnails/',
         width_field='thumbnail_width'
     )
 
