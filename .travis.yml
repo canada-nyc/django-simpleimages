@@ -11,6 +11,3 @@ script:
 env:
   global:
     - DJANGO_SETTINGS_MODULE=simpleimages.test.settings
-  matrix:
-    - USE_CACHE=true
-    - USE_CACHE=

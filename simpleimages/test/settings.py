@@ -14,14 +14,6 @@ DATABASES = {
     },
 }
 
-if os.environ.get('USE_CACHE', False):
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'simpleimages'
-        }
-    }
-
 # Testing
 
 INSTALLED_APPS += ('django_nose',)
