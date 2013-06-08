@@ -16,34 +16,45 @@ def perform_transformation(instances, field_names=None):
         updated_fields = []
         transformed_fields_dict = instance.transformed_fields
         for original_field_name, destination_dict in transformed_fields_dict.items():
-            if field_names and not original_field_name in field_names:
+            # if passed an explicit list of field_names then only transform
+            # those fields
+            passed_field_names = field_names is not None
+            if passed_field_names and original_field_name not in field_names:
                 logger.debug('"{0}" field isnt being transformed'.format(
                     original_field_name
                 ))
                 break
+
             original_field = getattr(instance, original_field_name)
+            # if there is no file saved on the source field, then don't
+            # transform
             if not original_field:
                 logger.debug('"{0}" field is empty'.format(original_field_name))
                 break
+
             original_name = original_field.name
             logger.debug('Transforming "{0}" file from "{1}" field'.format(
                 original_name,
                 original_field_name
             ))
+
             for destination_field_name, transformation in destination_dict.items():
                 logger.debug('Performing transformation to "{0}" field'.format(
                     destination_field_name
                 ))
                 destination_field = getattr(instance, destination_field_name)
+
                 new_image = transformation(original_field)
-                if new_image:
+                try:
                     logger.debug('Saving new image')
                     destination_field.save(
                         original_name,
                         new_image,
                         save=False
                     )
-                else:
+                # if the new_image is not a proper image, then don't raise an
+                # exception but log an error and leave the field blank
+                except AttributeError:
                     logger.error(
                         'The image on {0} was not transformed from {1} -> {2}'.format(
                             instance,
@@ -51,7 +62,9 @@ def perform_transformation(instances, field_names=None):
                             destination_field_name
                         )
                     )
-                updated_fields.append(destination_field_name)
+                else:
+                    updated_fields.append(destination_field_name)
+
         if updated_fields:
             logger.debug('{0}fields updated, saving instance'.format(
                 ', '.join(updated_fields)
