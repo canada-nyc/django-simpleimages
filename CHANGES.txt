@@ -1,3 +1,4 @@
+v0.2.7, 06/06/13 -- Save only filename and not whole path for transformed images
 v0.2.6, 06/06/13 -- Use .count() for management command instead of len()
 v0.2.5, 06/04/13 -- Fixed `retransform` with no fields
 v0.2.4, 06/04/13 -- Increased transform debug logging
