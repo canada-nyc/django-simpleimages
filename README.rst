@@ -52,6 +52,9 @@ the ``update_fields`` argument for model saving, which was implemented in 1.5.
 
 Then add ``simpleimages`` to your ``INSTALLED_APPS``.
 
+If you dont want to overwrite existing images, then set
+``SIMPLEIMAGES_OVERWRITE`` to false.
+
 
 Usage
 ---------------

@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.core.files.base import ContentFile
+from django.test.utils import override_settings
 
 from ..utils import perform_transformation
 from . import utils
@@ -105,3 +106,27 @@ class PerformTransformationTest(utils.RemoveStorage, TestCase):
     def test_save_path(self):
         perform_transformation([self.model])
         self.assertNotIn('originals', self.model.thumbnail.path)
+
+    @override_settings(SIMPLEIMAGES_OVERWRITE=False)
+    def test_wont_overwrite_on_settings(self):
+        self.model.image.save(
+            self.image_name,
+            utils.django_image(
+                *(2, 2),
+                name=self.image_name
+            )
+        )
+        perform_transformation([self.model])
+
+        self.model.image.save(
+            self.image_name,
+            utils.django_image(
+                *(10, 10),
+                name=self.image_name
+            )
+        )
+        perform_transformation([self.model])
+
+        self.non_cached_model = TestModel.objects.get(pk=self.model.pk)
+        self.assertEqual(self.model.thumbnail.width, 2)
+        self.assertEqual(self.non_cached_model.thumbnail.width, 2)

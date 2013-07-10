@@ -1,6 +1,8 @@
 import logging
 import os
 
+from django.conf import settings
+
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +14,8 @@ def perform_transformation(instances, field_names=None):
     default it will not save the model after transforming. Also if the
     `field_names` is false, it will resave all the fields on the model.
     '''
+    OVERWRITE_EXISTING = getattr(settings, 'SIMPLEIMAGES_OVERWRITE', True)
+
     for instance in instances:
         logger.debug('Transforming images on "{0}"'.format(instance))
         updated_fields = []
@@ -44,7 +48,12 @@ def perform_transformation(instances, field_names=None):
                     destination_field_name
                 ))
                 destination_field = getattr(instance, destination_field_name)
-
+                if not OVERWRITE_EXISTING and destination_field:
+                    logger.debug(
+                        ('Field already has image and SIMPLEIMAGES_OVERWRITE'
+                         'is False').format(destination_field_name)
+                    )
+                    break
                 new_image = transformation(original_field)
                 try:
                     logger.debug('Saving new image')

@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from . import utils
 from .models import TestModel
@@ -62,6 +63,7 @@ class ImageTransformFieldTest(utils.RemoveStorage, TestCase):
             10,
         )
 
+    @override_settings(SIMPLEIMAGES_OVERWRITE=False)
     def test_image_saved_before_creation(self):
         unsaved_model = TestModel()
         unsaved_model.image.save(
