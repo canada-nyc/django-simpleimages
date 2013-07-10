@@ -1,3 +1,4 @@
+v0.2.8, 07/10/13 -- Added option to not overwrite image
 v0.2.7, 06/06/13 -- Save only filename and not whole path for transformed images
 v0.2.6, 06/06/13 -- Use .count() for management command instead of len()
 v0.2.5, 06/04/13 -- Fixed `retransform` with no fields
