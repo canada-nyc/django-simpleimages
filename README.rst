@@ -14,4 +14,4 @@ django-simpleimages
 ``django-simpleimages`` is an opinionated Django app which allows you
 to transform images on model saves.
 
-Documentation: django-simpleimages.rtfd.org
+http://django-simpleimages.readthedocs.org/
