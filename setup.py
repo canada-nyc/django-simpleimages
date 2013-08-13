@@ -8,7 +8,7 @@ setup(
     author_email='s.shanabrook@gmail.com',
     packages=['simpleimages',],
     url='https://www.github.com/saulshanabrook/django-simpleimages',
-    license='LICENSE.txt',
+    license=open('LICENSE.txt').read(),
     description='Opinionated Django image transforms on models',
     long_description=open('README.rst').read(),
     install_requires=[
