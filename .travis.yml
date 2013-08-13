@@ -14,8 +14,5 @@ env:
   global:
     - DJANGO_SETTINGS_MODULE=simpleimages.test.settings
   matrix:
-    - DJANGO_VERSION="https://www.djangoproject.com/download/1.6a1/tarball/"
+    - DJANGO_VERSION="https://www.djangoproject.com/download/1.6b1/tarball/"
     - DJANGO_VERSION="django>=1.5,<1.6"
-matrix:
-  allow_failures:
-    - env: DJANGO_VERSION="https://www.djangoproject.com/download/1.6a1/tarball/"
