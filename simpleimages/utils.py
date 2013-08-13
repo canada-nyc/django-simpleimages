@@ -1,5 +1,6 @@
 import logging
 import os
+import itertools
 
 from django.conf import settings
 
@@ -7,84 +8,87 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
-def perform_transformation(instances, field_names=None):
+def perform_multiple_transformations(instances, field_names_to_transform=None):
     '''
-    Transforms the images, from the field_name to any fields that are transformed
-    from that field. Will transform the images in each of the instances. By
-    default it will not save the model after transforming. Also if the
-    `field_names` is false, it will resave all the fields on the model.
+    Transforms a list of models using
+    :py:func:`~.utils.perform_transformation`.
+
+    :param instances: model instances to perform transformations on.
+    :type instances: iterable of instances of :py:class:`django.db.models.Model`
+
+    :param field_names_to_transform: field names on model to perform transformations on
+    :type field_names_to_transform: iterable of strings
     '''
+
+    map(perform_transformation,
+        instances,
+        itertools.repeat(field_names_to_transform))
+
+
+def perform_transformation(instance, field_names_to_transform=None):
+    '''
+    Transforms a model based on the fields specified in the
+    ``transformed_fields`` attribute. This should map source image
+    field names to dictionaries mapping destination field name to
+    their transformations. For instance::
+
+        {
+            'image': {
+                'thumbnail': scale(width=10),
+            }
+        }
+
+    If ``field_names_to_transform`` is None, then it will transform
+    all fields. Otherwise it will only transform
+    from those fields specified in ``field_names_to_transform``.
+
+    :param instance: model instance to perform transformations on
+    :type instance: instance of :py:class:`django.db.models.Model`
+
+    :param field_names_to_transform: field names on model to perform transformations on
+    :type field_names_to_transform: iterable of strings or None
+    '''
+
+    for source_field_name, destination_dict in instance.transformed_fields.items():
+        if field_names_to_transform is None or source_field_name in field_names_to_transform:
+            for destination_field_name, transformation in destination_dict.items():
+                transform_field(instance, source_field_name, destination_field_name, transformation)
+
+
+def transform_field(instance, source_field_name, destination_field_name, transformation):
+    '''
+    :param instance: model instance to perform transformations on
+    :type instance: instance of :py:class:`django.db.models.Model`
+
+    :param source_field_name: field name on model to find source image
+    :type source_field_name: string
+
+    :param destination_field_name: field name on model save transformed image to
+    :type destination_field_name: string
+
+    :param transformation: function, such as :py:func:`~.transforms.scale`, that takes an image files and returns a transformed image
+    :type transformation: function
+    '''
+
     OVERWRITE_EXISTING = getattr(settings, 'SIMPLEIMAGES_OVERWRITE', True)
 
-    for instance in instances:
-        logger.debug('Transforming images on "{0}"'.format(instance))
-        updated_fields = []
-        transformed_fields_dict = instance.transformed_fields
-        for original_field_name, destination_dict in transformed_fields_dict.items():
-            # if passed an explicit list of field_names then only transform
-            # those fields
-            passed_field_names = field_names is not None
-            if passed_field_names and original_field_name not in field_names:
-                logger.debug('"{0}" field isnt being transformed'.format(
-                    original_field_name
-                ))
-                break
+    original_field = getattr(instance, original_field_name)
+    destination_field = getattr(instance, destination_field_name)
 
-            original_field = getattr(instance, original_field_name)
-            # if there is no file saved on the source field, then don't
-            # transform
-            if not original_field:
-                logger.debug('"{0}" field is empty'.format(original_field_name))
-                break
 
-            original_name = original_field.name
-            logger.debug('Transforming "{0}" file from "{1}" field'.format(
-                original_name,
-                original_field_name
-            ))
+    if not OVERWRITE_EXISTING and destination_field:
+        return
 
-            for destination_field_name, transformation in destination_dict.items():
-                logger.debug('Performing transformation to "{0}" field'.format(
-                    destination_field_name
-                ))
-                destination_field = getattr(instance, destination_field_name)
-                if not OVERWRITE_EXISTING and destination_field:
-                    logger.debug(
-                        ('Field already has image and SIMPLEIMAGES_OVERWRITE'
-                         'is False').format(destination_field_name)
-                    )
-                    break
-                new_image = transformation(original_field)
-                try:
-                    logger.debug('Saving new image')
-                    # So that only the image file name is saved.
-                    # When using django-storages s3boto the name of the
-                    # image returns the whole path. So by using dirname
-                    # it will only use the actual file name when saving the
-                    # transformed file
-                    destination_name = os.path.dirname(original_name)
-                    destination_field.save(
-                        original_name,
-                        new_image,
-                        save=False
-                    )
-                # if the new_image is not a proper image, then don't raise an
-                # exception but log an error and leave the field blank
-                except AttributeError:
-                    logger.error(
-                        'The image on {0} was not transformed from {1} -> {2}'.format(
-                            instance,
-                            original_field_name,
-                            destination_field_name
-                        )
-                    )
-                else:
-                    updated_fields.append(destination_field_name)
-
-        if updated_fields:
-            logger.debug('{0}fields updated, saving instance'.format(
-                ', '.join(updated_fields)
-            ))
-            instance.save(update_fields=updated_fields)
-        else:
-            logger.debug('No fields updated')
+    new_image = transformation(original_field)
+    if new_image:
+        # So that only the image file name is saved.
+        # When using django-storages s3boto the name of the
+        # image returns the whole path. So by using dirname
+        # it will only use the actual file name when saving the
+        # transformed file
+        destination_name = os.path.dirname(original_field.name)
+        destination_field.save(
+            original_name,
+            new_image,
+        )
+        instance.save(update_fields=[destination_field_name])
