@@ -1,5 +1,5 @@
-Pillow==1.7.8
 coveralls==0.2
+Pillow
 pytest-django
 pytest-cov
 pytest-pep8
