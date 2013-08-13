@@ -10,7 +10,7 @@ from django.core.files import File
 def scale(height=None, width=None):
     def scale_image_function(django_file):
         try:
-            pil_image = pil_image_from_django_file(django_file)
+            pil_image = _pil_image_from_django_file(django_file)
         except IOError:
             return
 
@@ -20,7 +20,7 @@ def scale(height=None, width=None):
 
         transformed_pil_image = pil_image.copy()
         transformed_pil_image.thumbnail(dimensions, Image.ANTIALIAS)
-        tranformed_django_file = django_file_from_pil_image(
+        tranformed_django_file = _django_file_from_pil_image(
             transformed_pil_image,
             django_file.name
         )
@@ -28,7 +28,7 @@ def scale(height=None, width=None):
     return scale_image_function
 
 
-def pil_image_from_django_file(django_file):
+def _pil_image_from_django_file(django_file):
     if not isinstance(django_file, File):
         raise TypeError(
             'image is a {0}, not a django File'.format(type(django_file))
@@ -42,7 +42,7 @@ def pil_image_from_django_file(django_file):
     return pil_image
 
 
-def django_file_from_pil_image(transformed_pil_image, file_name):
+def _django_file_from_pil_image(transformed_pil_image, file_name):
     if not isinstance(transformed_pil_image, Image.Image):
         raise TypeError(
             'image is a {0}, not a PIL Image'.format(
