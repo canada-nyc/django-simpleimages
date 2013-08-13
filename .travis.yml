@@ -11,8 +11,6 @@ script:
 after_success:
   - coveralls
 env:
-  global:
-    - DJANGO_SETTINGS_MODULE=simpleimages.test.settings
   matrix:
     - DJANGO_VERSION="https://www.djangoproject.com/download/1.6b1/tarball/"
     - DJANGO_VERSION="django>=1.5,<1.6"
