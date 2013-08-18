@@ -3,7 +3,7 @@ from django.core.management import call_command
 
 from . import utils
 from .models import TestModel
-from ..trackers import track_model
+from simpleimages.trackers import track_model
 
 
 class ReTransformImagesTest(utils.RemoveStorage, TestCase):

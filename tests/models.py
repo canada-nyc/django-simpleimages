@@ -1,6 +1,6 @@
 from django.db import models
 
-from ..transforms import scale
+from simpleimages.transforms import scale
 
 
 class TestModel(models.Model):

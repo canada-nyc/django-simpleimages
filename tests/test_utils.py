@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.files.base import ContentFile
 from django.test.utils import override_settings
 
-from ..utils import perform_transformation
+from simpleimages.utils import perform_transformation
 from . import utils
 from .models import TestModel
 
