@@ -8,7 +8,7 @@ def track_model(model):
     @receiver(post_save, sender=model, weak=False, dispatch_uid='simpleimages')
     def transform_signal(sender, **kwargs):
         utils.perform_transformation(
-            [kwargs['instance']],
+            kwargs['instance'],
             kwargs['update_fields']
         )
 
