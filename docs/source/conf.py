@@ -28,6 +28,21 @@ intersphinx_mapping = {
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 
+autodoc_default_flags = [
+    'members',
+    'special-members',  # like __init__
+    'show-inheritance'
+]
+
+
+def skip(app, what, name, obj, skip, options):
+    if name == "__weakref__":
+        return True
+    return skip
+
+
+def setup(app):
+    app.connect("autodoc-skip-member", skip)
 
 # -- General configuration -----------------------------------------------------
 

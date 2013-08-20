@@ -2,7 +2,3 @@
 ===============================================
 
 .. automodule:: simpleimages.management.commands.retransform
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
