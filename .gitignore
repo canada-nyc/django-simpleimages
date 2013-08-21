@@ -10,3 +10,4 @@
 /cover/
 docs/build/*
 /.cache/
+/tests/media/
