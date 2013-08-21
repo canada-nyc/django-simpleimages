@@ -1,86 +1,147 @@
 from StringIO import StringIO
-from exceptions import IOError
 
-from PIL import Image, ImageFile
+from PIL import Image
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.files import File
+import django.core.files
 
 
-def scale(height=None, width=None):
-    def scale_image_function(django_file):
-        try:
-            pil_image = _pil_image_from_django_file(django_file)
-        except IOError:
-            return
+class BasePILTransform(object):
+    '''
+    Base transform object that provides helper methods to transform
+    :py:class:`django.core.files.images.ImageFile` using
+    :py:mod:`PIL`.
 
-        max_height = height or pil_image.size[0]
-        max_width = width or pil_image.size[1]
-        dimensions = (max_height, max_width)
+    Must subclass and override :py:meth:`~.BasePILTransform.transform_pil_image`.
+    '''
 
-        transformed_pil_image = pil_image.copy()
-        transformed_pil_image.thumbnail(dimensions, Image.ANTIALIAS)
-        tranformed_django_file = _django_file_from_pil_image(
-            transformed_pil_image,
-            django_file.name
-        )
-        return tranformed_django_file
-    return scale_image_function
+    IMAGE_QUALITY = 85
 
+    def __call__(self, original_django_file):
+        '''
+        Returns the transformed version of :py:class:`PIL.Image.Image`
 
-def _pil_image_from_django_file(django_file):
-    if not isinstance(django_file, File):
-        raise TypeError(
-            'image is a {0}, not a django File'.format(type(django_file))
-        )
-    if not django_file.file:
-        raise ValueError(
-            'the django file has no file saved to it.'
-        )
-    django_file.open()
-    pil_image = Image.open(django_file.file)
-    return pil_image
+        Uses :py:meth:`~.BasePILTransform.transform_pil_image` to transform
+        the :py:class:`PIL.Image.Image`.
 
+        :param original_django_file: source file
+        :type original_django_file: :py:class:`django.core.files.images.ImageFile`
+        :return: transformed file
+        :rtype: :py:class:`django.core.files.File`
+        '''
+        if not isinstance(original_django_file, django.core.files.File):
+            raise TypeError(
+                'image is a {0}, not a django File'.format(type(original_django_file))
+            )
+        if not original_django_file.file:
+            raise ValueError(
+                'the django file has no file saved to it.'
+            )
 
-def _django_file_from_pil_image(transformed_pil_image, file_name):
-    if not isinstance(transformed_pil_image, Image.Image):
-        raise TypeError(
-            'image is a {0}, not a PIL Image'.format(
-                type(transformed_pil_image)
+        return self.pil_image_to_django_file(
+            self.transform_pil_image(
+                self.django_file_to_pil_image(original_django_file)
             )
         )
-    temp_io = StringIO()
-    if transformed_pil_image.mode not in ('L', 'RGB'):
-        transformed_pil_image = transformed_pil_image.convert("RGB")
-    try:
-        transformed_pil_image.save(
+
+    def pil_image_to_django_file(self, pil_image):
+        '''
+        Gets a PIL image ready to be able to be saved using
+        :py:meth:`django.db.models.fields.files.FieldFile.save`
+
+        It converts the mode first to ``RGB`` or ``L``, so that it can
+        then save it as a ``JPEG``. It will save it as a progressive
+        ``JPEG`` with a quality of :py:attr:`IMAGE_QUALITY`.
+
+        :param pil_image: original image
+        :type pil_image: :py:class:`PIL.Image.Image`
+        :return: transformed image
+        :rtype: :py:class:`PIL.Image.Image`
+        '''
+        if pil_image.mode not in ('L', 'RGB'):
+            pil_image = pil_image.convert("RGB")
+        temp_io = StringIO()
+
+        pil_image.save(
             temp_io,
             "JPEG",
-            quality=85,
+            quality=self.IMAGE_QUALITY,
             optimize=True,
             progressive=True
         )
-    except IOError:
-        ImageFile.MAXBLOCK = transformed_pil_image.size[0] * transformed_pil_image.size[1]
-        transformed_pil_image.save(
-            temp_io,
-            "JPEG",
-            quality=85,
-            optimize=True,
-            progressive=True
+
+        temp_io.seek(0)
+        django_file = InMemoryUploadedFile(
+            file=temp_io,
+            field_name=None,
+            name=None,
+            content_type='image/jpeg',
+            size=temp_io.len,
+            charset=None,
         )
-    transformed_pil_image.save(
-        temp_io,
-        format='JPEG',
-        quality=85,
-    )
-    temp_io.seek(0)
-    django_file = InMemoryUploadedFile(
-        file=temp_io,
-        field_name=None,
-        name=file_name,
-        content_type='image/jpeg',
-        size=temp_io.len,
-        charset=None,
-    )
-    return django_file
+        return django_file
+
+    def transform_pil_image(self, pil_image):
+        '''
+        Returns the transformed version of the :py:class:`PIL.Image.Image`
+        Do some logic on :py:class:`PIL.Image.Image`.
+
+        Must subclass method to provide transformation logic.
+
+        :param pil_image: original image
+        :type pil_image: :py:class:`PIL.Image.Image`
+        :return: transformed image
+        :rtype: :py:class:`PIL.Image.Image`
+        '''
+        raise NotImplementedError
+
+    def django_file_to_pil_image(self, django_file):
+        '''
+        Converts a the file returned by
+        :py:class:`django.db.models.fields.ImageField` to a PIL image.
+
+        :param django_file: django file
+        :type django_file: :py:class:`django.db.models.fields.files.FieldFile`
+        :rtype: :py:class:`PIL.Image.Image`
+        '''
+        django_file.open()
+        pil_image = Image.open(django_file.file)
+        return pil_image
+
+
+class Scale(BasePILTransform):
+    '''
+    Scales down an image to max height and/or width. If the original
+    image is smaller than both/either specified dimensions than it will
+    be left unchanged.
+    '''
+
+    def __init__(self, height=None, width=None):
+        '''
+        Initialize this class with a max height and/or width (in pixels).
+
+        :param height: max height of scaled image
+        :param width: max width of scaled image
+        :type height: int or float
+        :type width: int or float
+        '''
+        self.dimensions = (height, width)
+        if not any(self.dimensions):
+            raise ValueError(
+                'Must be called with either `height` or `width`'
+            )
+
+    def transform_pil_image(self, pil_image):
+        '''
+        Uses :py:meth:`PIL.Image.Image.transform` to scale
+        down the image.
+
+        Based on `this stackoverflow discussions <http://stackoverflow.com/a/940368/907060>`_, uses
+        :attr:`PIL.Image.ANTIALIAS`
+        '''
+        max_height = min(self.dimensions[0] or float('inf'), pil_image.size[0])
+        max_width = min(self.dimensions[1] or float('inf'), pil_image.size[1])
+        max_dimensions = (max_height, max_width)
+
+        pil_image.thumbnail(max_dimensions, Image.ANTIALIAS)
+        return pil_image
