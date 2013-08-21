@@ -3,7 +3,7 @@ import StringIO
 import PIL
 import pytest
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.base import ContentFile
 
 
 class Image:
@@ -14,11 +14,7 @@ class Image:
 
     @property
     def django_file(self):
-        # Create a new Django file-like object to be used in models as ImageField using
-        # InMemoryUploadedFile.  If you look at the source in Django, a
-        # SimpleUploadedFile is essentially instantiated similarly to what is shown here
-        return InMemoryUploadedFile(self.image_file, None, self.name, 'image/jpeg',
-                                    self.image_file.len, None)
+        return ContentFile(self.image_file.getvalue())
 
     @property
     def image_file(self):

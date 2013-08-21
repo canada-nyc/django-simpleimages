@@ -2,7 +2,7 @@ from StringIO import StringIO
 
 from PIL import Image
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.base import ContentFile
 import django.core.files
 
 
@@ -71,14 +71,7 @@ class BasePILTransform(object):
         )
 
         temp_io.seek(0)
-        django_file = InMemoryUploadedFile(
-            file=temp_io,
-            field_name=None,
-            name=None,
-            content_type='image/jpeg',
-            size=temp_io.len,
-            charset=None,
-        )
+        django_file = ContentFile(temp_io.getvalue())
         return django_file
 
     def transform_pil_image(self, pil_image):
