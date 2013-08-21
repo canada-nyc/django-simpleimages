@@ -28,8 +28,8 @@ Here is an example model that will create transformed images on save::
 
         transformed_fields = {
             'image': {
-                'thumbnail_image': simpleimages.transforms.scale(width=10),
-                'large_image': simpleimages.transforms.scale(width=200),
+                'thumbnail_image': simpleimages.transforms.Scale(width=10),
+                'large_image': simpleimages.transforms.Scale(width=200),
             }
         }
 
@@ -119,8 +119,8 @@ and another time to get the dimensions::
 
         transformed_fields = {
             'image': {
-                'thumbnail_image': simpleimages.transforms.scale(height=600),
-                'large_image': simpleimages.transforms.scale(height=800),
+                'thumbnail_image': simpleimages.transforms.Scale(height=600),
+                'large_image': simpleimages.transforms.Scale(height=800),
             }
         }
 
