@@ -1,4 +1,4 @@
-from StringIO import StringIO
+from six.moves import StringIO
 
 from PIL import Image
 
