@@ -5,7 +5,7 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 MEDIA_ROOT = os.path.normpath(os.path.join(BASE_PATH, 'media'))
 
 SECRET_KEY = 'not secret'
-INSTALLED_APPS = ('simpleimages',)
+INSTALLED_APPS = ('simpleimages', 'tests')
 TEMPLATE_DEBUG = DEBUG = True
 DATABASES = {
     'default': {
