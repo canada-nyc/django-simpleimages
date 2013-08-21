@@ -1,11 +1,7 @@
-import logging
 import os
 import itertools
 
 from django.conf import settings
-
-
-logger = logging.getLogger(__name__)
 
 
 def perform_multiple_transformations(instances, field_names_to_transform=None):
