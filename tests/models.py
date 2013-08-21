@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.files.images import get_image_dimensions
 
 import simpleimages.utils
 import simpleimages.transforms
@@ -25,7 +24,7 @@ class TestModel(models.Model):
 
     transformed_fields = {
         'image': {
-            'thumbnail': simpleimages.transforms.Scale(width=10),
+            'thumbnail': simpleimages.transforms.Scale(width=5),
         }
     }
 
@@ -36,13 +35,3 @@ class TestModel(models.Model):
             destination_field_name='thumbnail',
             transformation=transformation
         )
-
-    @property
-    def image_dimensions(self):
-        self.image.open()
-        return get_image_dimensions(self.image)
-
-    @property
-    def thumbnail_dimensions(self):
-        self.thumbnail.open()
-        return get_image_dimensions(self.thumbnail)

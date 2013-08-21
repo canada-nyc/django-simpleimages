@@ -37,11 +37,11 @@ class TestTransformField:
 
         instance_with_source_and_thumb._transform()
 
-        assert not instance_with_source_and_thumb.image_dimensions == instance_with_source_and_thumb.thumbnail_dimensions
+        assert not instance_with_source_and_thumb.thumbnail.width == instance_with_source_and_thumb.image.width
 
     def test_yes_overwrite(self, settings, instance_with_source_and_thumb):
         settings.SIMPLEIMAGES_OVERWRITE = True
 
         instance_with_source_and_thumb._transform()
 
-        assert instance_with_source_and_thumb.image_dimensions == instance_with_source_and_thumb.thumbnail_dimensions
+        assert instance_with_source_and_thumb.thumbnail.width == instance_with_source_and_thumb.image.width
