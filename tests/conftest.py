@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 class Image:
     def __init__(self):
-        self.dimensions = (100, 100)
+        self.dimensions = (10, 10)
         self.color = 'blue'
         self.name = 'image.jpg'
 
