@@ -66,25 +66,23 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
     :type transformation: function
     '''
 
-    OVERWRITE_EXISTING = getattr(settings, 'SIMPLEIMAGES_OVERWRITE', True)
-
-    original_field = getattr(instance, original_field_name)
+    source_field = getattr(instance, source_field_name)
     destination_field = getattr(instance, destination_field_name)
 
-
+    OVERWRITE_EXISTING = getattr(settings, 'SIMPLEIMAGES_OVERWRITE', True)
     if not OVERWRITE_EXISTING and destination_field:
         return
 
-    new_image = transformation(original_field)
+    new_image = transformation(source_field)
     if new_image:
         # So that only the image file name is saved.
         # When using django-storages s3boto the name of the
         # image returns the whole path. So by using dirname
         # it will only use the actual file name when saving the
         # transformed file
-        destination_name = os.path.dirname(original_field.name)
+        destination_name = os.path.dirname(source_field.name)
         destination_field.save(
-            original_name,
+            destination_name,
             new_image,
         )
         instance.save(update_fields=[destination_field_name])
