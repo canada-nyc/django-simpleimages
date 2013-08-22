@@ -1,4 +1,4 @@
-from six.moves import StringIO
+import six
 
 from PIL import Image
 
@@ -60,7 +60,7 @@ class BasePILTransform(object):
         '''
         if pil_image.mode not in ('L', 'RGB'):
             pil_image = pil_image.convert("RGB")
-        temp_io = StringIO()
+        temp_io = six.BytesIO()
 
         pil_image.save(
             temp_io,
