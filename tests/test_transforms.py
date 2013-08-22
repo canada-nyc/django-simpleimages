@@ -7,28 +7,19 @@ import django.core.files
 import simpleimages.transforms
 
 
-class TestPILTransform:
-    @pytest.fixture()
-    def Transform(self):
-        return simpleimages.transforms.BasePILTransform()
-
-    @pytest.fixture()
-    def Transform_Blank(self, Transform):
-        Transform.transform_pil_image = lambda pil_image: pil_image
-        return Transform
-
-    def test_callable(self, image, Transform_Blank):
-        transformed = Transform_Blank(image.django_file)
+class TestPILtransform:
+    def test_callable(self, image, transform_return_same):
+        transformed = transform_return_same(image.django_file)
 
         assert isinstance(transformed, django.core.files.File)
 
-    def test_to_pil_image(self, image, Transform):
-        pil_image = Transform.django_file_to_pil_image(image.django_file)
+    def test_to_pil_image(self, image, transform):
+        pil_image = transform.django_file_to_pil_image(image.django_file)
 
         assert isinstance(pil_image, PIL.Image.Image)
 
-    def test_correct_size(self, image, Transform):
-        pil_image = Transform.django_file_to_pil_image(image.django_file)
+    def test_correct_size(self, image, transform):
+        pil_image = transform.django_file_to_pil_image(image.django_file)
 
         assert pil_image.size == image.dimensions
 
@@ -37,8 +28,8 @@ class TestPILTransform:
         image.dimensions = (request.param,) * 2
         return image
 
-    def test_to_django_file(self, large_and_small_image, Transform):
-        django_file = Transform.pil_image_to_django_file(large_and_small_image.pil_image)
+    def test_to_django_file(self, large_and_small_image, transform):
+        django_file = transform.pil_image_to_django_file(large_and_small_image.pil_image)
 
         assert isinstance(django_file, django.core.files.File)
 

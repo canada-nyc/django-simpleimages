@@ -5,6 +5,9 @@ import pytest
 
 from django.core.files.base import ContentFile
 
+import simpleimages
+from .models import TestModel
+
 
 class Image:
     def __init__(self):
@@ -56,3 +59,20 @@ def instance_with_source_and_thumb(image, instance_with_source):
 #         smtp.close()
 #     request.addfinalizer(fin)
 #     return smtp
+def instance_different_thumb(image, instance):
+    small_dimension = instance.transform_dimension - 1
+    image.dimensions = [small_dimension] * 2
+    instance.thumbnail.save(image.name, image.django_file)
+    assert instance.thumbnail.width != instance.image.width
+    return instance
+
+
+@pytest.fixture()
+def transform():
+    return simpleimages.transforms.BasePILTransform()
+
+
+@pytest.fixture()
+def transform_return_same(transform):
+    transform.transform_pil_image = lambda pil_image: pil_image
+    return transform
