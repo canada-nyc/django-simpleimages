@@ -5,6 +5,8 @@ import simpleimages.transforms
 
 
 class TestModel(models.Model):
+    transform_dimension = 5
+
     image = models.ImageField(
         upload_to='originals/'
     )
