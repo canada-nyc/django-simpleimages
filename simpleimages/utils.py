@@ -41,7 +41,6 @@ def perform_transformation(instance, field_names_to_transform=None):
     :param field_names_to_transform: field names on model to perform transformations on
     :type field_names_to_transform: iterable of strings or None
     '''
-
     for source_field_name, destination_dict in instance.transformed_fields.items():
         if field_names_to_transform is None or source_field_name in field_names_to_transform:
             for destination_field_name, transformation in destination_dict.items():
@@ -70,6 +69,7 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
     if not OVERWRITE_EXISTING and destination_field:
         return
 
+    source_field.open()
     new_image = transformation(source_field)
     if new_image:
         # So that only the image file name is saved.
@@ -78,6 +78,7 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
         # it will only use the actual file name when saving the
         # transformed file
         destination_name = os.path.dirname(source_field.name)
+
         destination_field.save(
             destination_name,
             new_image,
