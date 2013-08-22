@@ -1,5 +1,4 @@
 import os
-import itertools
 
 from django.conf import settings
 
@@ -15,10 +14,8 @@ def perform_multiple_transformations(instances, field_names_to_transform=None):
     :param field_names_to_transform: field names on model to perform transformations on
     :type field_names_to_transform: iterable of strings
     '''
-
-    map(perform_transformation,
-        instances,
-        itertools.repeat(field_names_to_transform))
+    for instance in instances:
+        perform_transformation(instance, field_names_to_transform)
 
 
 def perform_transformation(instance, field_names_to_transform=None):
