@@ -82,12 +82,7 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
     source_field.open()
     new_image = transformation(source_field)
     if new_image:
-        # So that only the image file name is saved.
-        # When using django-storages s3boto the name of the
-        # image returns the whole path. So by using dirname
-        # it will only use the actual file name when saving the
-        # transformed file
-        destination_name = os.path.dirname(source_field.name)
+        destination_name = os.path.basename(source_field.name)
 
         destination_field.save(
             destination_name,

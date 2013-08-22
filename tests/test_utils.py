@@ -32,6 +32,17 @@ class TestTransformField:
 
         assert instance_different_thumb.thumbnail.width == instance_different_thumb.image.width
 
+    def test_path_correct(self, instance):
+        simpleimages.utils.transform_field(
+            instance=instance,
+            source_field_name='image',
+            destination_field_name='thumbnail',
+            transformation=lambda file: file
+        )
+        original_name = instance.image.name.split('/')[-1]
+        new_path = 'thumbnails/' + original_name
+        assert instance.thumbnail.name == new_path
+
 
 class TestPerformTransformation:
     def test_all_fields(self, instance):
