@@ -1,6 +1,10 @@
 import os
 
 from django.conf import settings
+try:
+    from django.utils.module_loading import import_by_path
+except:  # Added in Django 1.6
+    from simpleimages.django_compat import import_by_path
 
 
 def perform_multiple_transformations(instances, field_names_to_transform=None):
@@ -16,6 +20,15 @@ def perform_multiple_transformations(instances, field_names_to_transform=None):
     '''
     for instance in instances:
         perform_transformation(instance, field_names_to_transform)
+
+
+def get_caller():
+    caller_text = getattr(
+        settings,
+        'SIMPLEIMAGES_TRANFORM_CALLER',
+        'simpleimages.callers.default'
+    )
+    return import_by_path(caller_text)
 
 
 def perform_transformation(instance, field_names_to_transform=None):
@@ -44,7 +57,8 @@ def perform_transformation(instance, field_names_to_transform=None):
     for source_field_name, destination_dict in instance.transformed_fields.items():
         if field_names_to_transform is None or source_field_name in field_names_to_transform:
             for destination_field_name, transformation in destination_dict.items():
-                transform_field(instance, source_field_name, destination_field_name, transformation)
+                arguments = [instance, source_field_name, destination_field_name, transformation]
+                get_caller()(transform_field, *arguments)
 
 
 def transform_field(instance, source_field_name, destination_field_name, transformation):
@@ -64,10 +78,6 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
 
     source_field = getattr(instance, source_field_name)
     destination_field = getattr(instance, destination_field_name)
-
-    OVERWRITE_EXISTING = getattr(settings, 'SIMPLEIMAGES_OVERWRITE', True)
-    if not OVERWRITE_EXISTING and destination_field:
-        return
 
     source_field.open()
     new_image = transformation(source_field)

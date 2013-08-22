@@ -32,7 +32,6 @@ Then push the finished feature to github and open a pull request form the branch
 
 New Release
 -----------
-
 To create a new release:
 
 1. Add changes to ``CHANGES.txt``

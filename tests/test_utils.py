@@ -22,21 +22,7 @@ class TestTransformField:
 
         assert instance.thumbnail
 
-    def test_no_overwrite(self, settings, instance_different_thumb):
-        settings.SIMPLEIMAGES_OVERWRITE = False
-
-        simpleimages.utils.transform_field(
-            instance=instance_different_thumb,
-            source_field_name='image',
-            destination_field_name='thumbnail',
-            transformation=lambda file: file
-        )
-
-        assert instance_different_thumb.thumbnail.width != instance_different_thumb.image.width
-
-    def test_yes_overwrite(self, settings, instance_different_thumb):
-        settings.SIMPLEIMAGES_OVERWRITE = True
-
+    def test_yes_overwrite(self, instance_different_thumb):
         simpleimages.utils.transform_field(
             instance=instance_different_thumb,
             source_field_name='image',
