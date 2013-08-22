@@ -1,8 +1,10 @@
 import six
 import PIL
 import pytest
+import shutil
 
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 import simpleimages
 from .models import TestModel
@@ -37,8 +39,13 @@ def image():
     return Image()
 
 
+def remove_media():
+    shutil.rmtree(settings.MEDIA_ROOT)
+
+
 @pytest.fixture()
-def instance(db, image):
+def instance(db, image, request):
+    request.addfinalizer(remove_media)
     instance = TestModel()
     instance.image.save(image.name, image.django_file)
     return instance
