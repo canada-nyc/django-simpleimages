@@ -38,26 +38,13 @@ def image():
 
 
 @pytest.fixture()
-def instance_with_source(image, instance):
+def instance(db, image):
+    instance = TestModel()
     instance.image.save(image.name, image.django_file)
     return instance
 
 
 @pytest.fixture()
-def instance_with_source_and_thumb(image, instance_with_source):
-    image.dimensions = [dimension + 1 for dimension in instance_with_source.image_dimensions]
-    instance_with_source.thumbnail.save(image.name, image.django_file)
-    return instance_with_source
-
-
-# @pytest.fixture()
-# def smtp(request):
-#     disconnect = track_model(TestModel)
-#     def fin():
-#         print ("finalizing %s" % smtp)
-#         smtp.close()
-#     request.addfinalizer(fin)
-#     return smtp
 def instance_different_thumb(image, instance):
     small_dimension = instance.transform_dimension - 1
     image.dimensions = [small_dimension] * 2
