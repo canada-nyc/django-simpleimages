@@ -12,13 +12,12 @@
 # serve to show the default.
 
 import sys, os
+from django.conf import settings
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../simpleimages'))
-sys.path.insert(0, os.path.abspath('../tests'))
+sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Custom Configuration ------------------------------------------------------
 
@@ -26,8 +25,10 @@ intersphinx_mapping = {
     'django': ('http://django.readthedocs.org/en/latest/', None),
 }
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 
+settings.configure(
+    INSTALLED_APPS='simpleimages'
+)
 autodoc_default_flags = [
     'members',
     'special-members',  # like __init__
