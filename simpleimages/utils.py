@@ -81,5 +81,6 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
         destination_field.save(
             destination_name,
             new_image,
+            save=False
         )
         instance.save(update_fields=[destination_field_name])
