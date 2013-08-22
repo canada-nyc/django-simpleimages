@@ -1,5 +1,4 @@
-from six.moves import StringIO
-
+import six.moves
 import PIL
 import pytest
 
@@ -23,7 +22,7 @@ class Image:
     def image_file(self):
         # Create a file-like object to write thumb data (thumb data previously created
         # using PIL, and stored in variable 'thumb')
-        image_io = StringIO()
+        image_io = six.moves.StringIO()
         self.pil_image.save(image_io, format='JPEG')
         image_io.seek(0)
         return image_io
