@@ -26,14 +26,9 @@ class TestModel(models.Model):
 
     transformed_fields = {
         'image': {
-            'thumbnail': simpleimages.transforms.Scale(width=5),
+            'thumbnail': simpleimages.transforms.Scale(width=transform_dimension),
         }
     }
 
-    def _transform(self, transformation=lambda file: file):
-        simpleimages.utils.transform_field(
-            instance=self,
-            source_field_name='image',
-            destination_field_name='thumbnail',
-            transformation=transformation
-        )
+    def retrieve_from_database(self):
+        return TestModel.objects.get(pk=self.pk)
