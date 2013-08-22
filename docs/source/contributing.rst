@@ -11,7 +11,7 @@ Create a new branch for your feature::
 
     git commit -b feature/whatever-you-like
 
-Add proper docstrings to
+Add proper docstrings to any changed or added code.
 
 Then make sure all the tests past (and write new ones for any new features)::
 
@@ -26,7 +26,7 @@ Check if the ``README.rst`` looks right::
 Compile the documentation and check if it looks right::
 
     make docs-html
-    open build/index.html
+    open docs/build/index.html
 
 Then push the finished feature to github and open a pull request form the branch.
 
