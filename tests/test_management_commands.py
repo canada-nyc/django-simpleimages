@@ -1,63 +1,39 @@
-from django.test import TestCase
 from django.core.management import call_command
 
-from . import utils
+from simpleimages.management.commands.retransform import parse_model_specifier
+
 from .models import TestModel
-from simpleimages.trackers import track_model
 
 
-class ReTransformImagesTest(utils.RemoveStorage, TestCase):
-    def setUp(self):
-        self.default_dimensions = (200, 200)
-        self.image_name = 'image.jpg'
-        self.disconnect = track_model(TestModel)
-        self.model = TestModel.objects.create()
-        self.model.image.save(
-            self.image_name,
-            utils.django_image(
-                *self.default_dimensions,
-                name=self.image_name
-            )
-        )
+class TestRetransform:
+    def test_retransform_specific_model(self, instance):
+        call_command('retransform', 'tests.TestModel')
+        non_cached_instance = instance.retrieve_from_database()
 
-        self.model.thumbnail.save(
-            self.image_name,
-            utils.django_image(
-                *self.default_dimensions,
-                name=self.image_name
-            ),
-            save=False
-        )
+        assert non_cached_instance.thumbnail
 
-    def tearDown(self):
-        self.disconnect()
+    def test_retransform_specific_field(self, instance):
+        call_command('retransform', 'tests.TestModel.image')
+        non_cached_instance = instance.retrieve_from_database()
 
-    def test_thumb_wrong(self):
-        self.assertEqual(
-            self.model.thumbnail.height,
-            self.default_dimensions[0],
-        )
+        assert non_cached_instance.thumbnail
 
-    def test_retransform_specific_model(self):
-        call_command('retransform', 'test.TestModel')
-        self.model_non_cached = TestModel.objects.get(pk=self.model.pk)
-        self.assertEqual(
-            self.model_non_cached.thumbnail.width,
-            10,
-        )
+    def test_retransform_save_width_field(self, instance):
+        call_command('retransform', 'tests.TestModel.image')
+        non_cached_instance = instance.retrieve_from_database()
 
-    def test_retransform_specific_field(self):
-        call_command('retransform', 'test.TestModel.image')
-        self.model_non_cached = TestModel.objects.get(pk=self.model.pk)
-        self.assertEqual(
-            self.model_non_cached.thumbnail.width,
-            10,
-        )
+        assert non_cached_instance.thumbnail_width
 
-    def test_retransform_save_width_field(self):
-        call_command('retransform', 'test.TestModel.image')
-        self.model_non_cached = TestModel.objects.get(pk=self.model.pk)
-        self.assertEqual(
-            self.model_non_cached.thumbnail_width,
-            10,
-        )
+
+class TestParseModelSpecifier:
+    def test_model(self):
+        model, field = parse_model_specifier('tests.TestModel')
+
+        assert model == TestModel
+        assert not field
+
+    def test_model_and_field(self):
+        model, field = parse_model_specifier('tests.TestModel.image')
+
+        assert model == TestModel
+        assert field == 'image'

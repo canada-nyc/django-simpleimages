@@ -1,9 +1,44 @@
-from itertools import repeat
-
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import get_model
 
-from ... import utils
+import simpleimages.utils
+
+
+def parse_model_specifier(specifier):
+    '''
+    Parses a string that specifies either a model or a field.
+    The string should look like ``app.model.[field]``.
+
+    >>> print parse_model_specifier('tests.TestModel')
+    (<class 'tests.models.TestModel'>, None)
+    >>> print parse_model_specifier('tests.TestModel.image')
+    (<class 'tests.models.TestModel'>, 'image')
+
+    :return: model and (optionally) field name
+    :rtype: tuple of :py:class:`~django.db.models.Model` and str or None
+    '''
+    values = specifier.split('.')
+
+    if len(values) == 2:
+        values.append(None)
+    elif len(values) != 3:
+        raise ValueError(
+            'Model specifier must be in app.model.[field] format. It'
+            'has {} parts instead of 2 or 3 (when split on ".")'.format(
+                len(values)
+            )
+        )
+
+    app_name, model_name, field_name = values
+    model = get_model(app_name, model_name)
+    if not model:
+        raise ValueError(
+            'Model {} on app {} can not be found'.format(
+                model_name,
+                app_name,
+            )
+        )
+    return model, field_name
 
 
 class Command(BaseCommand):
@@ -13,27 +48,24 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for arg in args:
             self.stdout.write('Transforming {0}'.format(arg))
-            arg_values = arg.split('.')
-            arg_values.extend(repeat(None, 3 - len(arg_values)))
-            app_name, model_name, field_name = arg_values
-            self.stdout.write('app: {0}'.format(app_name))
-            self.stdout.write('model: {0}'.format(model_name))
-            if field_name:
-                self.stdout.write('field: {0}'.format(field_name))
-            model = get_model(app_name, model_name)
-            if not model:
-                raise CommandError('That model-app pair can not be found')
-            instances = model._default_manager.all()
-            self.stdout.write(
-                'Transforming {0} models'.format(instances.count())
-            )
+            model, field_name = parse_model_specifier(arg)
 
-            if field_name:
-                utils.perform_transformation(
-                    instances=instances,
-                    field_names=[field_name]
-                )
+            instances = model._default_manager.all()
+            number_instances = instances.count()
+            if not number_instances:
+                raise CommandError('   No instances found')
             else:
-                utils.perform_transformation(
-                    instances=instances,
+                self.stdout.write(
+                    '    {0} models found'.format(instances.count())
                 )
+            if field_name:
+                self.stdout.write(
+                    '    From source field name "{}"'.format(field_name)
+                )
+            field_names = field_name or None
+            print instances
+            print field_names
+            simpleimages.utils.perform_multiple_transformations(
+                instances,
+                field_names
+            )
