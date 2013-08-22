@@ -63,8 +63,6 @@ class Command(BaseCommand):
                     '    From source field name "{}"'.format(field_name)
                 )
             field_names = field_name or None
-            print instances
-            print field_names
             simpleimages.utils.perform_multiple_transformations(
                 instances,
                 field_names
