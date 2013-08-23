@@ -1,3 +1,5 @@
+import pytest
+
 import simpleimages.utils
 
 
@@ -44,6 +46,7 @@ class TestTransformField:
         assert instance.thumbnail.name == new_path
 
 
+@pytest.mark.usefixtures("call_on_rq_as_well")
 class TestPerformTransformation:
     def test_all_fields(self, instance):
         simpleimages.utils.perform_transformation(instance)

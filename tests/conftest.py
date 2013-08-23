@@ -69,3 +69,8 @@ def transform():
 def transform_return_same(transform):
     transform.transform_pil_image = lambda pil_image: pil_image
     return transform
+
+
+@pytest.fixture(params=['simpleimages.callers.default', 'django_rq.enqueue'])
+def call_on_rq_as_well(request, settings):
+    settings.SIMPLEIMAGES_TRANFORM_CALLER = request.param
