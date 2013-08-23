@@ -1,3 +1,4 @@
+v1.0.0, 08/23/13 -- Added Sphinx docs, changed to py.test, and added option to use django-rq
 v0.2.8, 07/10/13 -- Added option to not overwrite image
 v0.2.7, 06/06/13 -- Save only filename and not whole path for transformed images
 v0.2.6, 06/06/13 -- Use .count() for management command instead of len()
