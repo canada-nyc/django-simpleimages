@@ -2,6 +2,7 @@ import six
 import PIL
 import pytest
 import shutil
+import sys
 
 from django.core.files.base import ContentFile
 from django.conf import settings
@@ -73,4 +74,8 @@ def transform_return_same(transform):
 
 @pytest.fixture(params=['simpleimages.callers.default', 'django_rq.enqueue'])
 def call_on_rq_as_well(request, settings):
+    python_3 = sys.version_info >= (3, 0)
+    if request.param == 'django_rq.enqueue' and python_3:
+        pytest.skip("django_rq doesnt support python 3")
+
     settings.SIMPLEIMAGES_TRANFORM_CALLER = request.param
