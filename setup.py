@@ -6,7 +6,11 @@ setup(
     version='1.0.1',
     author='Saul Shanabrook',
     author_email='s.shanabrook@gmail.com',
-    packages=['simpleimages', 'simpleimages.management.commands'],
+    packages=[
+        'simpleimages',
+        'simpleimages.management',
+        'simpleimages.management.commands',
+    ],
     url='https://www.github.com/saulshanabrook/django-simpleimages',
     license=open('LICENSE.txt').read(),
     description='Opinionated Django image transforms on models',
