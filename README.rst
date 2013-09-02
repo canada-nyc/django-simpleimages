@@ -4,6 +4,9 @@ django-simpleimages
 .. image:: https://pypip.in/v/django-simpleimages/badge.png
         :target: https://crate.io/packages/django-simpleimages
 
+.. image:: https://pypip.in/d/django-simpleimages/badge.png
+        :target: https://crate.io/packages/django-simpleimages
+
 .. image:: https://travis-ci.org/saulshanabrook/django-simpleimages.png
     :target: https://travis-ci.org/saulshanabrook/django-simpleimages
 
