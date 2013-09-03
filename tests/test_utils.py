@@ -1,5 +1,3 @@
-import pytest
-
 import simpleimages.utils
 
 
@@ -46,7 +44,6 @@ class TestTransformField:
         assert instance.thumbnail.name == new_path
 
 
-@pytest.mark.usefixtures("call_on_rq_as_well")
 class TestPerformTransformation:
     def test_all_fields(self, instance):
         simpleimages.utils.perform_transformation(instance)
@@ -59,6 +56,11 @@ class TestPerformTransformation:
     def test_without_field_doesnt_transform(self, instance):
         simpleimages.utils.perform_transformation(instance, ['not a field'])
 
+        assert not instance.thumbnail
+
+    def test_transform_caller_works(self, instance, settings):
+        settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'simpleimages.callers._no_action'
+        simpleimages.utils.perform_transformation(instance)
         assert not instance.thumbnail
 
 
