@@ -5,7 +5,7 @@ Add ``simpleimages`` to your ``INSTALLED_APPS`` to use the
 management command.
 
 If you want to transform the images uses workers, set the
-``SIMPLEIMAGES_TRANFORM_CALLER`` to a function that will call
+``SIMPLEIMAGES_TRANSFORM_CALLER`` to a function that will call
 the transform function. It defaults to ``'simpleimages.callers.default'``
 
 See :ref:`async docs<async>` for details.

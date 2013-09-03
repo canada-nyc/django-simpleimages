@@ -25,7 +25,7 @@ def perform_multiple_transformations(instances, field_names_to_transform=None):
 def get_caller():
     caller_text = getattr(
         settings,
-        'SIMPLEIMAGES_TRANFORM_CALLER',
+        'SIMPLEIMAGES_TRANSFORM_CALLER',
         'simpleimages.callers.default'
     )
     return import_by_path(caller_text)
