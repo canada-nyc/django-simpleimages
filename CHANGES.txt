@@ -1,3 +1,4 @@
+v1.0.3, 09/02/13 -- Fixed spelling for caller setting.
 v1.0.2, 08/31/13 -- Fixed adding management command directory
 v1.0.1, 08/31/13 -- Added management directory to packages so that Django finds command
 v1.0.0, 08/23/13 -- Added Sphinx docs, changed to py.test, and added option to use django-rq
