@@ -63,6 +63,17 @@ def perform_transformation(instance, field_names_to_transform=None):
 
 def transform_field(instance, source_field_name, destination_field_name, transformation):
     '''
+    Does an image transformation on a instance. It will get the image
+    from the source field attribute of the instnace, then call
+    the transformation function with that instance, and finally
+    save that transformed image into the destination field attribute
+    of the instance.
+
+    .. note::
+
+    If either the source field is blank, or the transformation returns
+    a false value then the destination field will be deleted.
+
     :param instance: model instance to perform transformations on
     :type instance: instance of :py:class:`django.db.models.Model`
 
