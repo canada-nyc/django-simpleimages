@@ -72,7 +72,8 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
     .. note::
 
     If either the source field is blank, or the transformation returns
-    a false value then the destination field will be deleted.
+    a false value then the destination field will be deleted, if it
+    exists.
 
     :param instance: model instance to perform transformations on
     :type instance: instance of :py:class:`django.db.models.Model`
@@ -99,8 +100,10 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
             transformed_image,
             save=False
         )
-    else:
+    elif destination_field:
         destination_field.delete()
+    else:
+        return
     instance.save(update_fields=[destination_field_name])
 
 
