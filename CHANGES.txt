@@ -1,3 +1,4 @@
+v1.0.5, 09/04/13 -- Check if destination field exists before deleting.
 v1.0.4, 09/04/13 -- Deletion of destination field when no source exists or transformation fails.
 v1.0.3, 09/02/13 -- Fixed spelling for caller setting.
 v1.0.2, 08/31/13 -- Fixed adding management command directory
