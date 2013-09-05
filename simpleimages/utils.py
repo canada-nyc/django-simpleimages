@@ -79,14 +79,21 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
     source_field = getattr(instance, source_field_name)
     destination_field = getattr(instance, destination_field_name)
 
-    source_field.open()
-    new_image = transformation(source_field)
-    if new_image:
+    transformed_image = get_transformed_image(source_field, transformation)
+    if transformed_image:
         destination_name = os.path.basename(source_field.name)
 
         destination_field.save(
             destination_name,
-            new_image,
+            transformed_image,
             save=False
         )
-        instance.save(update_fields=[destination_field_name])
+    else:
+        destination_field.delete()
+    instance.save(update_fields=[destination_field_name])
+
+
+def get_transformed_image(source, transformation):
+    if source:
+        source.open()
+        return transformation(source)
