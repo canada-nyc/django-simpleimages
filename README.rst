@@ -18,3 +18,9 @@ django-simpleimages
 to transform images on model saves.
 
 http://django-simpleimages.readthedocs.org/
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/saulshanabrook/django-simpleimages/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
