@@ -1,4 +1,6 @@
-from django.core.management.base import BaseCommand, CommandError
+from clint.textui import puts, indent, progress
+
+from django.core.management.base import BaseCommand
 from django.db.models import get_model
 
 import simpleimages.utils
@@ -47,23 +49,21 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for arg in args:
-            self.stdout.write('Transforming {0}'.format(arg))
+            puts('Transforming {0}'.format(arg))
             model, field_name = parse_model_specifier(arg)
 
             instances = model._default_manager.all()
             number_instances = instances.count()
-            if not number_instances:
-                raise CommandError('   No instances found')
-            else:
-                self.stdout.write(
-                    '    {0} models found'.format(instances.count())
-                )
-            if field_name:
-                self.stdout.write(
-                    '    From source field name "{}"'.format(field_name)
-                )
+            with indent(4):
+                if not number_instances:
+                    puts('No instances found')
+                    continue
+
+                else:
+                    puts('{0} models found'.format(instances.count()))
+                if field_name:
+                    puts('From source field name "{0}"'.format(field_name))
             field_names = field_name or None
-            simpleimages.utils.perform_multiple_transformations(
-                instances,
-                field_names
-            )
+
+            for instance in progress.bar(instances):
+                simpleimages.utils.perform_transformation(instance, field_names)

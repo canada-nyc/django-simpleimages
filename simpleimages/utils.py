@@ -7,21 +7,6 @@ except:  # Added in Django 1.6
     from simpleimages.django_compat import import_by_path
 
 
-def perform_multiple_transformations(instances, field_names_to_transform=None):
-    '''
-    Transforms a list of models using
-    :py:func:`~.utils.perform_transformation`.
-
-    :param instances: model instances to perform transformations on.
-    :type instances: iterable of instances of :py:class:`django.db.models.Model`
-
-    :param field_names_to_transform: field names on model to perform transformations on
-    :type field_names_to_transform: iterable of strings
-    '''
-    for instance in instances:
-        perform_transformation(instance, field_names_to_transform)
-
-
 def get_caller():
     caller_text = getattr(
         settings,

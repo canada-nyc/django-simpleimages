@@ -18,7 +18,8 @@ setup(
     install_requires=[
         "Django>=1.5,<=1.6",
         "six",
-        "Pillow"
+        "Pillow",
+        'clint',
     ],
     zip_safe=False,  # so that django finds management commands,
     classifiers=[

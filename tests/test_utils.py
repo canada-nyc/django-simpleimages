@@ -83,18 +83,3 @@ class TestPerformTransformation:
         settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'simpleimages.callers._no_action'
         simpleimages.utils.perform_transformation(instance)
         assert not instance.thumbnail
-
-
-class TestPerformMultipleTransformations:
-    def test_all_fields(self, instance):
-        simpleimages.utils.perform_multiple_transformations([instance])
-        assert instance.thumbnail
-
-    def test_one_field_transforms(self, instance):
-        simpleimages.utils.perform_multiple_transformations([instance], ['image'])
-        assert instance.thumbnail
-
-    def test_without_field_doesnt_transform(self, instance):
-        simpleimages.utils.perform_multiple_transformations([instance], ['not a field'])
-
-        assert not instance.thumbnail
