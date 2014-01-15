@@ -1,3 +1,4 @@
+v1.1.0, 01/14/14 -- Display progress for management command. Require Pillow.
 v1.0.5, 09/04/13 -- Check if destination field exists before deleting.
 v1.0.4, 09/04/13 -- Deletion of destination field when no source exists or transformation fails.
 v1.0.3, 09/02/13 -- Fixed spelling for caller setting.
