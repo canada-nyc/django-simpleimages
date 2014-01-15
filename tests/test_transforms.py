@@ -47,6 +47,23 @@ class TestScale:
         new_height, new_width = get_image_dimensions(new_image)
         assert get_image_dimensions(new_image) == (transformed_size,) * 2
 
+    def test_width_and_height(self, image):
+        '''
+        Make sure that if both are set, will shrink to max of either
+        '''
+
+        transform = simpleimages.transforms.Scale(width=10, height=10)
+
+        image.dimensions = (100, 10)
+        new_image = transform(image.django_file)
+        new_height, new_width = get_image_dimensions(new_image)
+        assert get_image_dimensions(new_image)[0] == 10
+
+        image.dimensions = (10, 100)
+        new_image = transform(image.django_file)
+        new_height, new_width = get_image_dimensions(new_image)
+        assert get_image_dimensions(new_image)[1] == 10
+
     def test_over_large(self, image):
         '''
         if specified dimension is larger than image, it shouldn't enlarge
