@@ -1,4 +1,3 @@
-Pillow
 python-coveralls
 pytest-django
 pytest-cov
