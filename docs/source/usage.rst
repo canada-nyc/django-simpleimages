@@ -135,12 +135,12 @@ Performing Transforms Asynchronously
 By default all transformations are performed when the model is saved.
 If you want to instead perform the transformations asynchronously,
 for the obvious performance reasons, you by setting
-``SIMPLEIMAGES_TRANFORM_CALLER``. Set this to the dotted
+``SIMPLEIMAGES_TRANSFORM_CALLER``. Set this to the dotted
 path to any function that will take the transform function as its
 first argument and the arguments to call it with as subsequent
 arguments and keyword arguments. This format was based around
 `django-rq`_. To perform all transforms through django-rq set
-``SIMPLEIMAGES_TRANFORM_CALLER='django_rq.enqueue'``.
+``SIMPLEIMAGES_TRANSFORM_CALLER='django_rq.enqueue'``.
 
 .. _django-rq: https://github.com/ui/django-rq#putting-jobs-in-the-queue
 
