@@ -83,5 +83,5 @@ class TestScale:
 
         new_image = transform(image.django_file)
 
-        new_height, new_width = get_image_dimensions(new_image)
+        new_width, new_height = get_image_dimensions(new_image)
         assert new_height == 500

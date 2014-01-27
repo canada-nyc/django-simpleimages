@@ -109,7 +109,7 @@ class Scale(BasePILTransform):
     be left unchanged.
     '''
 
-    def __init__(self, height=None, width=None):
+    def __init__(self, width=None, height=None):
         '''
         Initialize this class with a max height and/or width (in pixels).
 
@@ -118,7 +118,7 @@ class Scale(BasePILTransform):
         :type height: int or float
         :type width: int or float
         '''
-        self.dimensions = (height, width)
+        self.dimensions = (width, height)
         if not any(self.dimensions):
             raise ValueError(
                 'Must be called with either `height` or `width`'
@@ -132,9 +132,9 @@ class Scale(BasePILTransform):
         Based on `this stackoverflow discussions <http://stackoverflow.com/a/940368/907060>`_, uses
         :attr:`PIL.Image.ANTIALIAS`
         '''
-        max_height = min(self.dimensions[0] or float('inf'), pil_image.size[0])
-        max_width = min(self.dimensions[1] or float('inf'), pil_image.size[1])
-        max_dimensions = (max_height, max_width)
+        max_width = min(self.dimensions[0] or float('inf'), pil_image.size[0])
+        max_height = min(self.dimensions[1] or float('inf'), pil_image.size[1])
+        max_dimensions = (max_width, max_height)
 
         pil_image.thumbnail(max_dimensions, Image.ANTIALIAS)
         return pil_image
