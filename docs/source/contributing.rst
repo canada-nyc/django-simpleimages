@@ -37,5 +37,5 @@ To create a new release:
 1. Add changes to ``CHANGES.txt``
 2. Change version in ``setup.py``
 3. Change version in ``docs/source/conf.py``
-4. ``python setup.py register``
-5. ``python setup.py sdist upload``
+4. ``python setup.py sdist upload``
+5. ``python setup.py bdist_wheel``

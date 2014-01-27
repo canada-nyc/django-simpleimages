@@ -11,3 +11,4 @@
 docs/build/*
 /.cache/
 /tests/media/
+/build/
