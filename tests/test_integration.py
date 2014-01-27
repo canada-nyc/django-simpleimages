@@ -45,16 +45,15 @@ def test_changes_dimension_field(db, image, instance):
     '''
     disconnect = track_model(TestModel)
 
-    # make sure the first image has a width field set
-    original_width_field_value = 10
-    instance.width_field = original_width_field_value
-    instance.save()
-
-    assert instance.width_field == 10
-
+    image.dimensions = (2, 2)
     instance.image.save(image.name, image.django_file)
-    disconnect()
+    old_thumbnail_width_field = instance.thumbnail_width
+    assert old_thumbnail_width_field == instance.thumbnail.width == 2
 
-    new_width_field = instance.thumbnail_width
-    assert new_width_field == instance.thumbnail.width
-    assert new_width_field != original_width_field_value
+    image.dimensions = (10, 10)
+    instance.image.save(image.name, image.django_file)
+    new_thumbnail_width_field = instance.thumbnail_width
+
+    assert new_thumbnail_width_field == instance.thumbnail.width == 5
+
+    disconnect()
