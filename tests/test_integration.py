@@ -24,3 +24,37 @@ def test_replace_image(db, image, instance_different_thumb):
     disconnect()
 
     assert instance_different_thumb.thumbnail.width == instance_different_thumb.image.width
+
+
+def test_set_dimension_field(db, image, instance):
+    '''
+    Make sure that it will set the `width_field` and `height_field` of the
+    target field after transformation
+    '''
+    disconnect = track_model(TestModel)
+    instance.image.save(image.name, image.django_file)
+
+    disconnect()
+    assert instance.thumbnail.width == instance.thumbnail_width
+
+
+def test_changes_dimension_field(db, image, instance):
+    '''
+    makes sure it will override old `width_field` and `height_field` of the
+    target field, when uploading a new image
+    '''
+    disconnect = track_model(TestModel)
+
+    # make sure the first image has a width field set
+    original_width_field_value = 10
+    instance.width_field = original_width_field_value
+    instance.save()
+
+    assert instance.width_field == 10
+
+    instance.image.save(image.name, image.django_file)
+    disconnect()
+
+    new_width_field = instance.thumbnail_width
+    assert new_width_field == instance.thumbnail.width
+    assert new_width_field != original_width_field_value

@@ -44,7 +44,6 @@ class TestScale:
 
         transform = simpleimages.transforms.Scale(width=transformed_size)
         new_image = transform(image.django_file)
-        new_height, new_width = get_image_dimensions(new_image)
         assert get_image_dimensions(new_image) == (transformed_size,) * 2
 
     def test_width_and_height(self, image):
@@ -56,12 +55,10 @@ class TestScale:
 
         image.dimensions = (100, 10)
         new_image = transform(image.django_file)
-        new_height, new_width = get_image_dimensions(new_image)
         assert get_image_dimensions(new_image)[0] == 10
 
         image.dimensions = (10, 100)
         new_image = transform(image.django_file)
-        new_height, new_width = get_image_dimensions(new_image)
         assert get_image_dimensions(new_image)[1] == 10
 
     def test_over_large(self, image):
@@ -73,5 +70,18 @@ class TestScale:
 
         transform = simpleimages.transforms.Scale(width=transformed_size)
         new_image = transform(image.django_file)
-        new_height, new_width = get_image_dimensions(new_image)
         assert get_image_dimensions(new_image) == image.dimensions
+
+    def test_will_shrink_height(self, image):
+        '''
+        if specified dimension is larger than image, it shouldn't enlarge
+        the image
+        '''
+
+        transform = simpleimages.transforms.Scale(height=500)
+        image.dimensions = [600, 700]
+
+        new_image = transform(image.django_file)
+
+        new_height, new_width = get_image_dimensions(new_image)
+        assert new_height == 500
