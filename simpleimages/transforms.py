@@ -56,7 +56,7 @@ class BasePILTransform(object):
         :param pil_image: original image
         :type pil_image: :py:class:`PIL.Image.Image`
         :return: transformed image
-        :rtype: :py:class:`PIL.Image.Image`
+        :rtype: :py:class:`django.core.files.base.ContentFile`
         '''
         if pil_image.mode not in ('L', 'RGB'):
             pil_image = pil_image.convert("RGB")
