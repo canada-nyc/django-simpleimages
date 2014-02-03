@@ -3,3 +3,5 @@ pytest-django
 pytest-cov
 pytest-pep8
 django-rq
+django-pq
+psycopg2

@@ -5,6 +5,8 @@ python:
   - "3.3"
 services:
   - redis-server
+before_script:
+  - psql -c 'create database django_simpleimages;' -U postgres
 install:
   - pip install -e . -r requirements-testing.txt $DJANGO_VERSION
 script:

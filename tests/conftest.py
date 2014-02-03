@@ -7,6 +7,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 
 import django_rq
+import pq
 
 import simpleimages
 from .models import TestModel
@@ -74,7 +75,14 @@ def transform_return_same(transform):
 
 
 @pytest.fixture()
-def rq(transactional_db, settings):
+def rq_caller(transactional_db, settings):
     settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'django_rq.enqueue'
 
     return lambda: django_rq.get_worker().work(burst=True)
+
+
+@pytest.fixture()
+def pq_caller(transactional_db, settings):
+    settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'simpleimages.callers.pq'
+
+    return lambda: pq.W.create([pq.PQ.create()]).work(burst=True)
