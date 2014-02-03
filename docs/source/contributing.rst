@@ -19,6 +19,10 @@ Then make sure all the tests past (and write new ones for any new features)::
     pip install -r requirements-dev.txt
     py.test
 
+To test for RQ support, you must have a Redis installed and accesible
+via default login. If py.test can't find a working Redis connection,
+it will skip the RQ tests.
+
 Check if the ``README.rst`` looks right::
 
     restview --long-description

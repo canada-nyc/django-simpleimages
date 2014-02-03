@@ -3,6 +3,8 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
+services:
+  - redis-server
 install:
   - pip install -e . -r requirements-testing.txt $DJANGO_VERSION
 script:
