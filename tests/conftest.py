@@ -2,10 +2,11 @@ import six
 import PIL
 import pytest
 import shutil
-import sys
 
 from django.core.files.base import ContentFile
 from django.conf import settings
+
+import django_rq
 
 import simpleimages
 from .models import TestModel
@@ -70,3 +71,10 @@ def transform():
 def transform_return_same(transform):
     transform.transform_pil_image = lambda pil_image: pil_image
     return transform
+
+
+@pytest.fixture()
+def rq(transactional_db, settings):
+    settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'django_rq.enqueue'
+
+    return lambda: django_rq.get_worker().work(burst=True)
