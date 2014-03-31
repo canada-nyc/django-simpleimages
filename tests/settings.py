@@ -12,8 +12,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django_simpleimages',
         'USER': 'postgres',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
     }
 }
 
