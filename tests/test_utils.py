@@ -3,9 +3,7 @@ import pytest
 import simpleimages.utils
 
 
-pytestmark = pytest.mark.usefixtures("transactional_db")
-
-
+@pytest.mark.django_db(transaction=True)
 class TestTransformField:
     def test_blank_transform_wont_save(self, instance):
         simpleimages.utils.transform_field(
@@ -70,6 +68,7 @@ class TestTransformField:
         assert instance.thumbnail.name == new_path
 
 
+@pytest.mark.django_db(transaction=True)
 class TestPerformTransformation:
     def test_all_fields(self, instance):
         simpleimages.utils.perform_transformation(instance)

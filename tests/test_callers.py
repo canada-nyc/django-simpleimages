@@ -6,9 +6,7 @@ from .models import TestModel
 from .conditions import rq_redis
 
 
-pytestmark = pytest.mark.usefixtures("transactional_db")
-
-
+@pytest.mark.django_db(transaction=True)
 @rq_redis
 def test_rq(rq_caller, image, instance):
     disconnect = track_model(TestModel)
@@ -20,6 +18,7 @@ def test_rq(rq_caller, image, instance):
     assert instance.thumbnail
 
 
+@pytest.mark.django_db(transaction=True)
 def test_pq(pq_caller, image, instance):
     disconnect = track_model(TestModel)
     instance.image.save(image.name, image.django_file)

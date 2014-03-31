@@ -7,7 +7,7 @@ from simpleimages.management.commands.retransform import parse_model_specifier
 from .models import TestModel
 
 
-@pytest.mark.usefixtures("transactional_db")
+@pytest.mark.django_db(transaction=True)
 class TestRetransform:
     def test_retransform_specific_model(self, instance):
         call_command('retransform', 'tests.TestModel')
