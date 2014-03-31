@@ -1,3 +1,5 @@
+import pytest
+
 from django.core.management import call_command
 
 from simpleimages.management.commands.retransform import parse_model_specifier
@@ -5,6 +7,7 @@ from simpleimages.management.commands.retransform import parse_model_specifier
 from .models import TestModel
 
 
+@pytest.mark.usefixtures("transactional_db")
 class TestRetransform:
     def test_retransform_specific_model(self, instance):
         call_command('retransform', 'tests.TestModel')

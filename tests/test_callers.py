@@ -1,7 +1,12 @@
+import pytest
+
 from simpleimages.trackers import track_model
 
 from .models import TestModel
 from .conditions import rq_redis
+
+
+pytestmark = pytest.mark.usefixtures("transactional_db")
 
 
 @rq_redis

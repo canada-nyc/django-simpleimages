@@ -1,5 +1,10 @@
+import pytest
+
 from simpleimages.trackers import track_model
 from .models import TestModel
+
+
+pytestmark = pytest.mark.usefixtures("transactional_db")
 
 
 def test_saved_creates_thumbnail(db, image, instance):

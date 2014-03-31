@@ -47,7 +47,7 @@ def remove_media():
 
 
 @pytest.fixture()
-def instance(db, image, request):
+def instance(image, request):
     request.addfinalizer(remove_media)
     instance = TestModel()
     instance.image.save(image.name, image.django_file)
@@ -75,14 +75,14 @@ def transform_return_same(transform):
 
 
 @pytest.fixture()
-def rq_caller(transactional_db, settings):
+def rq_caller(settings):
     settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'django_rq.enqueue'
 
     return lambda: django_rq.get_worker().work(burst=True)
 
 
 @pytest.fixture()
-def pq_caller(transactional_db, settings):
+def pq_caller(settings):
     settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'simpleimages.callers.pq'
 
     return lambda: pq.W.create([pq.PQ.create()]).work(burst=True)

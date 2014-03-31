@@ -1,4 +1,9 @@
+import pytest
+
 import simpleimages.utils
+
+
+pytestmark = pytest.mark.usefixtures("transactional_db")
 
 
 class TestTransformField:
