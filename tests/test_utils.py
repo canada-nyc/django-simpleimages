@@ -1,4 +1,9 @@
+import pytest
+
 import simpleimages.utils
+
+
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 class TestTransformField:

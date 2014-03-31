@@ -13,11 +13,27 @@ Create a new branch for your feature::
 
 Add proper docstrings to any changed or added code.
 
-Then make sure all the tests past (and write new ones for any new features)::
+Then make sure all the tests past (and write new ones for any new features).
+
+To run the tests you must be running PostgreSQL with a database
+called ``django_simpleimages_test``. To create one run::
+
+    createuser -s postgres
+    psql -c 'create database django_simpleimages;' -U postgres
+
+Then install Python dependencies::
 
     pip install -e .
     pip install -r requirements-dev.txt
+
+
+And finally run the tests::
+
     py.test
+
+To test for RQ support, you must have a Redis installed and accesible
+via default login. If py.test can't find a working Redis connection,
+it will skip the RQ tests.
 
 Check if the ``README.rst`` looks right::
 

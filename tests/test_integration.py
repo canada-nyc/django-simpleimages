@@ -1,15 +1,20 @@
+import pytest
+
 from simpleimages.trackers import track_model
 from .models import TestModel
 
 
-def test_saved_creates_thumbnail(db, image, instance):
+pytestmark = pytest.mark.django_db(transaction=True)
+
+
+def test_saved_creates_thumbnail(image, instance):
     disconnect = track_model(TestModel)
     instance.image.save(image.name, image.django_file)
     disconnect()
     assert instance.thumbnail
 
 
-def test_saved_transforms_properly(db, image, instance):
+def test_saved_transforms_properly(image, instance):
     disconnect = track_model(TestModel)
     instance.image.save(image.name, image.django_file)
 
@@ -17,7 +22,7 @@ def test_saved_transforms_properly(db, image, instance):
     assert instance.thumbnail.width < image.dimensions[0]
 
 
-def test_replace_image(db, image, instance_different_thumb):
+def test_replace_image(image, instance_different_thumb):
     disconnect = track_model(TestModel)
 
     instance_different_thumb.image.save(image.name, image.django_file)
@@ -26,7 +31,7 @@ def test_replace_image(db, image, instance_different_thumb):
     assert instance_different_thumb.thumbnail.width == instance_different_thumb.image.width
 
 
-def test_set_dimension_field(db, image, instance):
+def test_set_dimension_field(image, instance):
     '''
     Make sure that it will set the `width_field` and `height_field` of the
     target field after transformation
@@ -38,7 +43,7 @@ def test_set_dimension_field(db, image, instance):
     assert instance.thumbnail.width == instance.thumbnail_width
 
 
-def test_changes_dimension_field(db, image, instance):
+def test_changes_dimension_field(image, instance):
     '''
     makes sure it will override old `width_field` and `height_field` of the
     target field, when uploading a new image

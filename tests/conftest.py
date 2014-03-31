@@ -2,10 +2,12 @@ import six
 import PIL
 import pytest
 import shutil
-import sys
 
 from django.core.files.base import ContentFile
 from django.conf import settings
+
+import django_rq
+import pq
 
 import simpleimages
 from .models import TestModel
@@ -45,7 +47,7 @@ def remove_media():
 
 
 @pytest.fixture()
-def instance(db, image, request):
+def instance(image, request):
     request.addfinalizer(remove_media)
     instance = TestModel()
     instance.image.save(image.name, image.django_file)
@@ -70,3 +72,17 @@ def transform():
 def transform_return_same(transform):
     transform.transform_pil_image = lambda pil_image: pil_image
     return transform
+
+
+@pytest.fixture()
+def rq_caller(settings):
+    settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'django_rq.enqueue'
+
+    return lambda: django_rq.get_worker().work(burst=True)
+
+
+@pytest.fixture()
+def pq_caller(settings):
+    settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'simpleimages.callers.pq'
+
+    return lambda: pq.W.create([pq.PQ.create()]).work(burst=True)
