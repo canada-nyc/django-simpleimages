@@ -10,6 +10,7 @@ import django_rq
 import pq
 
 import simpleimages
+import simpleimages.trackers
 from .models import TestModel
 
 
@@ -59,8 +60,14 @@ def instance_different_thumb(image, instance):
     small_dimension = instance.transform_dimension - 1
     image.dimensions = [small_dimension] * 2
     instance.thumbnail.save(image.name, image.django_file)
-    assert instance.thumbnail.width != instance.image.width
     return instance
+
+
+@pytest.fixture(scope="module")
+def track_model(request):
+    disconnect = simpleimages.trackers.track_model(TestModel)
+
+    request.addfinalizer(disconnect)
 
 
 @pytest.fixture()
