@@ -52,13 +52,38 @@ def test_changes_dimension_field(image, instance):
 
     image.dimensions = (2, 2)
     instance.image.save(image.name, image.django_file)
-    old_thumbnail_width_field = instance.thumbnail_width
-    assert old_thumbnail_width_field == instance.thumbnail.width == 2
-
-    image.dimensions = (10, 10)
-    instance.image.save(image.name, image.django_file)
-    new_thumbnail_width_field = instance.thumbnail_width
-
-    assert new_thumbnail_width_field == instance.thumbnail.width == 5
 
     disconnect()
+    assert instance.thumbnail_width == instance.thumbnail.width == 2
+
+
+def test_saves_changed_dimension_field(image, instance):
+    '''
+    make sure that changes to the `width_field` and `height_field` will
+    actually be saved to the databased and not only changed on the unsaved
+    python instance
+    '''
+    disconnect = track_model(TestModel)
+
+    image.dimensions = (2, 2)
+    instance.image.save(image.name, image.django_file)
+
+    disconnect()
+    instance = instance.__class__.objects.get(pk=instance.pk)
+    assert instance.thumbnail_width == instance.thumbnail.width == 2
+
+
+def test_unequal_dimension_fields_saved(image, instance):
+    '''
+    makes sure that photos with not equal height and width dimensions will
+    be correctly saved into the proper dimension fields
+    '''
+    disconnect = track_model(TestModel)
+
+    image.dimensions = (1, 2)
+    instance.image.save(image.name, image.django_file)
+
+    disconnect()
+    instance = instance.retrieve_from_database()
+    assert instance.thumbnail_width == instance.thumbnail.width == 1
+    assert instance.thumbnail_height == instance.thumbnail.height == 2

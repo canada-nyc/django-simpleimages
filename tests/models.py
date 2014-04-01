@@ -15,10 +15,17 @@ class TestModel(models.Model):
         null=True,
         editable=False,
         upload_to='thumbnails/',
-        width_field='thumbnail_width'
+        width_field='thumbnail_width',
+        height_field='thumbnail_height'
     )
 
     thumbnail_width = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        editable=False,
+    )
+
+    thumbnail_height = models.PositiveIntegerField(
         null=True,
         blank=True,
         editable=False,
