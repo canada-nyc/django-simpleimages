@@ -5,7 +5,7 @@ import simpleimages.transforms
 
 
 class TestModel(models.Model):
-    transform_dimension = 5
+    transform_max_width = 5
 
     image = models.ImageField(
         upload_to='originals/'
@@ -33,7 +33,7 @@ class TestModel(models.Model):
 
     transformed_fields = {
         'image': {
-            'thumbnail': simpleimages.transforms.Scale(width=transform_dimension),
+            'thumbnail': simpleimages.transforms.Scale(width=transform_max_width),
         }
     }
 

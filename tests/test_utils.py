@@ -17,26 +17,26 @@ class TestTransformField:
 
         assert not instance.thumbnail
 
-    def test_blank_transform_will_delete(self, instance_different_thumb):
+    def test_blank_transform_will_delete(self, instance):
         simpleimages.utils.transform_field(
-            instance=instance_different_thumb,
+            instance=instance,
             source_field_name='image',
             destination_field_name='thumbnail',
             transformation=lambda file: None
         )
 
-        assert not instance_different_thumb.thumbnail
+        assert not instance.thumbnail
 
-    def test_blank_field_delete(self, instance_different_thumb):
-        instance_different_thumb.image.delete()
+    def test_blank_field_delete(self, instance):
+        instance.image.delete()
         simpleimages.utils.transform_field(
-            instance=instance_different_thumb,
+            instance=instance,
             source_field_name='image',
             destination_field_name='thumbnail',
             transformation=lambda file: file
         )
 
-        assert not instance_different_thumb.thumbnail
+        assert not instance.thumbnail
 
     def test_will_save(self, instance):
         simpleimages.utils.transform_field(
@@ -48,15 +48,15 @@ class TestTransformField:
 
         assert instance.thumbnail
 
-    def test_yes_overwrite(self, instance_different_thumb):
+    def test_yes_overwrite(self, instance_larger_thumb):
         simpleimages.utils.transform_field(
-            instance=instance_different_thumb,
+            instance=instance_larger_thumb,
             source_field_name='image',
             destination_field_name='thumbnail',
             transformation=lambda file: file
         )
 
-        assert instance_different_thumb.thumbnail.width == instance_different_thumb.image.width
+        assert instance_larger_thumb.thumbnail.width == instance_larger_thumb.image.width
 
     def test_path_correct(self, instance):
         simpleimages.utils.transform_field(
