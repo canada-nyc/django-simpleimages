@@ -62,21 +62,6 @@ def test_saves_changed_dimension_field(image, instance):
     assert instance.thumbnail_width == instance.thumbnail.width == image.width
 
 
-def test_unequal_dimension_fields_saved(image, instance):
-    '''
-    makes sure that photos with not equal height and width dimensions will
-    be correctly saved into the proper dimension fields
-    '''
-    max_width = instance.transform_max_width
-    image.dimensions = (max_width - 1, max_width - 2)
-    instance.image.save(image.name, image.django_file)
-
-    instance = instance.retrieve_from_database()
-
-    assert instance.thumbnail_width == instance.thumbnail.width == image.width
-    assert instance.thumbnail_height == instance.thumbnail.height == image.height
-
-
 def test_oversized_image_saves_changed_dimensions(image, instance):
     '''
     if a photo is too large, make sure the resized version updates the dimension
