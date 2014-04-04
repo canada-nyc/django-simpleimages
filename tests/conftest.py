@@ -10,14 +10,24 @@ import django_rq
 import pq
 
 import simpleimages
+import simpleimages.trackers
 from .models import TestModel
 
 
 class Image:
+
     def __init__(self):
-        self.dimensions = (10, 10)
+        self.width, self.height = (10, 10)
         self.color = 'blue'
         self.name = 'image.jpg'
+
+    @property
+    def dimensions(self):
+        return self.width, self.height
+
+    @dimensions.setter
+    def dimensions(self, value):
+        self.width, self.height = value
 
     @property
     def django_file(self):
@@ -25,8 +35,8 @@ class Image:
 
     @property
     def image_file(self):
-        # Create a file-like object to write thumb data (thumb data previously created
-        # using PIL, and stored in variable 'thumb')
+        # Create a file-like object to write thumb data (thumb data previously
+        # created using PIL, and stored in variable 'thumb')
         image_io = six.BytesIO()
         self.pil_image.save(image_io, format='JPEG')
         image_io.seek(0)
@@ -50,17 +60,45 @@ def remove_media():
 def instance(image, request):
     request.addfinalizer(remove_media)
     instance = TestModel()
+
+    assert not instance.thumbnail
+
     instance.image.save(image.name, image.django_file)
     return instance
 
 
 @pytest.fixture()
-def instance_different_thumb(image, instance):
-    small_dimension = instance.transform_dimension - 1
-    image.dimensions = [small_dimension] * 2
-    instance.thumbnail.save(image.name, image.django_file)
-    assert instance.thumbnail.width != instance.image.width
+def instance_undersized(image, request):
+    request.addfinalizer(remove_media)
+    instance = TestModel()
+    image.width = instance.transform_max_width - 1
+
+    instance.image.save(image.name, image.django_file)
     return instance
+
+
+@pytest.fixture()
+def instance_oversized(image, request):
+    request.addfinalizer(remove_media)
+    instance = TestModel()
+    image.width = instance.transform_max_width + 1
+
+    instance.image.save(image.name, image.django_file)
+    return instance
+
+
+@pytest.fixture()
+def instance_larger_thumb(image, instance):
+    image.width = instance.transform_max_width + 1
+    instance.thumbnail.save(image.name, image.django_file)
+    return instance
+
+
+@pytest.fixture(scope="module")
+def track_model(request):
+    disconnect = simpleimages.trackers.track_model(TestModel)
+
+    request.addfinalizer(disconnect)
 
 
 @pytest.fixture()

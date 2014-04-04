@@ -5,7 +5,7 @@ import simpleimages.transforms
 
 
 class TestModel(models.Model):
-    transform_dimension = 5
+    transform_max_width = 20
 
     image = models.ImageField(
         upload_to='originals/'
@@ -15,7 +15,8 @@ class TestModel(models.Model):
         null=True,
         editable=False,
         upload_to='thumbnails/',
-        width_field='thumbnail_width'
+        width_field='thumbnail_width',
+        height_field='thumbnail_height'
     )
 
     thumbnail_width = models.PositiveIntegerField(
@@ -24,9 +25,15 @@ class TestModel(models.Model):
         editable=False,
     )
 
+    thumbnail_height = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        editable=False,
+    )
+
     transformed_fields = {
         'image': {
-            'thumbnail': simpleimages.transforms.Scale(width=transform_dimension),
+            'thumbnail': simpleimages.transforms.Scale(width=transform_max_width),
         }
     }
 

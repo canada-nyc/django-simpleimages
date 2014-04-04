@@ -75,11 +75,14 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
 
     source_field = getattr(instance, source_field_name)
     destination_field = getattr(instance, destination_field_name)
-
+    update_fields = [destination_field_name]
     transformed_image = get_transformed_image(source_field, transformation)
     if transformed_image:
         destination_name = os.path.basename(source_field.name)
-
+        dimension_field_names = [
+            destination_field.field.height_field,
+            destination_field.field.width_field]
+        update_fields += filter(None, dimension_field_names)
         destination_field.save(
             destination_name,
             transformed_image,
@@ -89,7 +92,7 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
         destination_field.delete()
     else:
         return
-    instance.save(update_fields=[destination_field_name])
+    instance.save(update_fields=update_fields)
 
 
 def get_transformed_image(source, transformation):
