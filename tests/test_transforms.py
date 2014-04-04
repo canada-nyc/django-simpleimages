@@ -74,8 +74,8 @@ class TestScale:
 
     def test_will_shrink_height(self, image):
         '''
-        if specified dimension is larger than image, it shouldn't enlarge
-        the image
+        if image is larger than specified dimension, should shrink down
+        to that dimension
         '''
 
         transform = simpleimages.transforms.Scale(height=500)
@@ -85,3 +85,17 @@ class TestScale:
 
         new_width, new_height = get_image_dimensions(new_image)
         assert new_height == 500
+
+    def test_will_shrink_proportionally(self, image):
+        '''
+        if one dimension is too large, the other should be shrunk down as well
+        '''
+
+        transform = simpleimages.transforms.Scale(height=10)
+        image.width = 20
+        image.height = 2 * image.width
+
+        new_image = transform(image.django_file)
+
+        new_width, new_height = get_image_dimensions(new_image)
+        assert new_height == 2 * new_width
