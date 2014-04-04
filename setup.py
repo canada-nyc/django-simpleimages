@@ -16,7 +16,7 @@ setup(
     description='Opinionated Django image transforms on models',
     long_description=open('README.rst').read(),
     install_requires=[
-        "Django>=1.5,<=1.7",
+        "Django>=1.5,<=1.8",
         "six",
         "Pillow",
         'clint',
@@ -37,6 +37,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Software Development :: Libraries',
     ],
 )
