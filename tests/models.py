@@ -5,7 +5,7 @@ import simpleimages.transforms
 
 
 class TestModel(models.Model):
-    transform_max_width = 5
+    transform_max_width = 20
 
     image = models.ImageField(
         upload_to='originals/'
