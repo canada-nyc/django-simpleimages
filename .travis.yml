@@ -22,5 +22,3 @@ matrix:
   include:
     - python: "3.4"
       env: DJANGO_VERSION="https://www.djangoproject.com/m/releases/1.7/Django-1.7b1.tar.gz"
-  allow_failures:
-    - env: DJANGO_VERSION="https://www.djangoproject.com/m/releases/1.7/Django-1.7b1.tar.gz"
