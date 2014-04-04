@@ -1,9 +1,9 @@
 from clint.textui import puts, indent, progress
 
 from django.core.management.base import BaseCommand
-from django.db.models import get_model
 
 import simpleimages.utils
+from simpleimages.django_compat import get_model
 
 
 def parse_model_specifier(specifier):

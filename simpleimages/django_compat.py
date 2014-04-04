@@ -2,6 +2,11 @@
 Code that is necessary for supporting older Django versions
 '''
 
+try:
+    from django.apps.config import get_model
+except ImportError:  # Django < 1.8
+    from django.db.models import get_model
+
 
 def import_by_path(dotted_path, error_prefix=''):
     """
@@ -34,3 +39,4 @@ def import_by_path(dotted_path, error_prefix=''):
         raise ImproperlyConfigured('%sModule "%s" does not define a "%s" attribute/class' % (
             error_prefix, module_path, class_name))
     return attr
+
