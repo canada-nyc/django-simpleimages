@@ -13,4 +13,5 @@ another field, when the model saves.
    configuration
    usage
    contributing
+   changelog
    reference/index
