@@ -56,9 +56,25 @@ def transform_field(instance, source_field_name, destination_field_name, transfo
 
     .. note::
 
-    If either the source field is blank, or the transformation returns
-    a false value then the destination field will be deleted, if it
-    exists.
+        If the source field is blank or the transformation returns
+        a false value then the destination field image will be deleted, if it
+        exists.
+
+    .. warning::
+
+        When the model instance is saved with the new transformed image, it uses
+        the ``update_fields`` argument for
+        :py:meth:`~django.db.models.Model.save`, to tell the model to only update
+        the destination field and, if set in the destination field, the
+        :py:attr:`~django.db.models.ImageField.height_field` and
+        :py:attr:`~django.db.models.ImageField.width_field`. This means that
+        if the saving code for the model sets any other fields, in the saving
+        field process, it will not save those fields to the database. This would
+        only happen if you introduce custom logic to the saving process of
+        destination field, like the dimension fields do, that updates another field
+        on that module. In that case, when the model is saved for the
+        transformation, that other field will not be saved to the database.
+
 
     :param instance: model instance to perform transformations on
     :type instance: instance of :py:class:`django.db.models.Model`
