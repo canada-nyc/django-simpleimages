@@ -50,8 +50,13 @@ New Release
 -----------
 To create a new release:
 
-1. Add changes to ``CHANGES.txt``
+1. Add changes to ``docs/source/changelog.rst``, using Releases_ formatting
 2. Change version in ``setup.py``
 3. Change version in ``docs/source/conf.py``
 4. ``python setup.py sdist upload``
 5. ``python setup.py bdist_wheel``
+6. ``git tag x.x.x``
+7. Push git tag and commit
+8. Add release to github tag, with changes and releasion name.
+
+.. _releases: http://releases.readthedocs.org/en/latest/concepts.html
