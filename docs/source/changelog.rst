@@ -2,11 +2,15 @@
 Changelog
 =========
 
-* :support:`-` Display progress for management command. Require Pillow.
+* :support:`19` Change to use Releases for changelog.
+* :feature:`16` Support Django 1.7 (experimental).
+* :bug:`15` Make compatible with ``height_field`` and ``width_field``.
+* :support:`13` Add testing for 3rd party transformation support.
 * :release:`1.1.1 <2014.01.27>`
 * :bug:`-` Fix height/width order. Before they were reversed and broken.
 * :release:`1.1.0 <2014.01.14>`
-* :support:`-` Display progress for management command. Require Pillow.
+* :support:`-` Display progress for management command.
+* :feature:`_` Require Pillow.
 * :release:`1.0.5 <2013.09.04>`
 * :bug:`-` Check if destination field exists before deleting.
 * :release:`1.0.4 <2013.09.04>`
