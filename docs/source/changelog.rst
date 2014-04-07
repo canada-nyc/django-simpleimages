@@ -2,9 +2,10 @@
 Changelog
 =========
 
+* :release:`1.2.0 <2014.04.07>`
 * :support:`19` Change to use Releases for changelog.
 * :feature:`16` Support Django 1.7 (experimental).
-* :bug:`15` Make compatible with ``height_field`` and ``width_field``.
+* :bug:`15 major` Make compatible with ``height_field`` and ``width_field``.
 * :support:`13` Add testing for 3rd party transformation support.
 * :release:`1.1.1 <2014.01.27>`
 * :bug:`-` Fix height/width order. Before they were reversed and broken.
