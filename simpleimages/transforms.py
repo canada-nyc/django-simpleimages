@@ -142,14 +142,15 @@ class Scale(BasePILTransform):
             e = pil_image._getexif()
             if e is not None:
                 exif=dict(e.items())
-                orientation = exif[orientation] 
-                if orientation == 3:   
-                    pil_image = pil_image.transpose(Image.ROTATE_180)
-                elif orientation == 6: 
-                    pil_image = pil_image.transpose(Image.ROTATE_270)
-                
-                elif orientation == 8: 
-                    pil_image = pil_image.transpose(Image.ROTATE_90)
+                if orientation in exif:
+                    orientation = exif[orientation] 
+                    if orientation == 3:   
+                        pil_image = pil_image.transpose(Image.ROTATE_180)
+                    elif orientation == 6: 
+                        pil_image = pil_image.transpose(Image.ROTATE_270)
+                    
+                    elif orientation == 8: 
+                        pil_image = pil_image.transpose(Image.ROTATE_90)
                     
         pil_image.thumbnail(max_dimensions, Image.ANTIALIAS)
         return pil_image
