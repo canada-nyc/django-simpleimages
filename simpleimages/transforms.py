@@ -1,10 +1,9 @@
 import six
 
-from PIL import Image
+from PIL import Image, ExifTags
 
 from django.core.files.base import ContentFile
 import django.core.files
-
 
 class BasePILTransform(object):
     '''
