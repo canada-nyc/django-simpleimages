@@ -136,5 +136,21 @@ class Scale(BasePILTransform):
         max_height = min(self.dimensions[1] or float('inf'), pil_image.size[1])
         max_dimensions = (max_width, max_height)
 
+        if hasattr(pil_image, '_getexif'):
+            for orientation in ExifTags.TAGS.keys(): 
+                if ExifTags.TAGS[orientation]=='Orientation':
+                    break
+            e = pil_image._getexif()
+            if e is not None:
+                exif=dict(e.items())
+                orientation = exif[orientation] 
+                if orientation == 3:   
+                    pil_image = pil_image.transpose(Image.ROTATE_180)
+                elif orientation == 6: 
+                    pil_image = pil_image.transpose(Image.ROTATE_270)
+                
+                elif orientation == 8: 
+                    pil_image = pil_image.transpose(Image.ROTATE_90)
+                    
         pil_image.thumbnail(max_dimensions, Image.ANTIALIAS)
         return pil_image
