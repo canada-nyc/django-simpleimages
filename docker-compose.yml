@@ -1,0 +1,15 @@
+python:
+  build: .
+  links:
+    - db
+    - redis
+  environment:
+    PG_HOST: db
+    PG_USER: postgres
+    REDIS_HOST: redis
+  volumes:
+    - .:/code/
+db:
+  image: postgres
+redis:
+  image: redis

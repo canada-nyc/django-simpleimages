@@ -15,11 +15,27 @@ Add proper docstrings to any changed or added code.
 
 Then make sure all the tests past (and write new ones for any new features).
 
+With Docker
+-------------------------
+You must have Docker_ and `Docker Compose`_ installed.
+
+To run the tests::
+
+    docker-compose up
+
+To build the docs::
+
+    docker-compose run --no-deps python make docs-html
+    open docs/build/index.html
+
+
+Without Docker
+-------------------------
 To run the tests you must be running PostgreSQL with a database
 called ``django_simpleimages_test``. To create one run::
 
     createuser -s postgres
-    psql -c 'create database django_simpleimages;' -U postgres
+    psql -c 'create database postgres;' -U postgres
 
 Then install Python dependencies::
 
@@ -60,3 +76,5 @@ To create a new release:
 8. Add release to github tag, with changes and releasion name.
 
 .. _releases: http://releases.readthedocs.org/en/latest/concepts.html
+.. _Docker: https://docs.docker.com/
+.. _`Docker Compose`: https://docs.docker.com/compose/
