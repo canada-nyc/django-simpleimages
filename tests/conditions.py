@@ -1,5 +1,6 @@
 import pytest
 from django_rq.queues import get_connection
+import redis
 
 try:
     get_connection().ping()

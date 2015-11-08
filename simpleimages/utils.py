@@ -1,6 +1,5 @@
 import os
 
-from django.conf import settings
 try:
     from django.utils.module_loading import import_by_path
 except:  # Added in Django 1.6
@@ -8,6 +7,7 @@ except:  # Added in Django 1.6
 
 
 def get_caller():
+    from django.conf import settings
     caller_text = getattr(
         settings,
         'SIMPLEIMAGES_TRANSFORM_CALLER',
@@ -43,6 +43,7 @@ def perform_transformation(instance, field_names_to_transform=None):
         if field_names_to_transform is None or source_field_name in field_names_to_transform:
             for destination_field_name, transformation in destination_dict.items():
                 arguments = [instance, source_field_name, destination_field_name, transformation]
+                print(get_caller(), instance)
                 get_caller()(transform_field, *arguments)
 
 
