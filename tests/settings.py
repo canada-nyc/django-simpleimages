@@ -11,7 +11,7 @@ TEMPLATE_DEBUG = DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
+        'NAME': os.environ['DB_NAME'],
         'USER': 'postgres',
         'HOST': os.environ['DB_HOST'],
         'PORT': 5432,

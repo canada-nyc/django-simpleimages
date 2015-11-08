@@ -8,6 +8,7 @@ tests:
     - redis
   environment:
     DB_HOST: db
+    DB_NAME: postgres
     REDIS_HOST: redis
 db:
   image: postgres

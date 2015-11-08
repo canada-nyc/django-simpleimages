@@ -8,6 +8,8 @@ python:
   - "3.5"
 services:
   - redis-server
+before_script:
+  - psql -c "CREATE DATABASE mydb;" -U postgres
 install:
   - pip install -e . -r requirements-testing.txt $DJANGO_VERSION
 script:
@@ -17,6 +19,7 @@ after_success:
 env:
   global:
     - DB_HOST=localhost
+    - DB_NAME=mydb
     - REDIS_HOST=localhost
   matrix:
     - DJANGO_VERSION="django>=1.8,<1.9"
