@@ -12,7 +12,7 @@ Changelog
 * :bug:`-` Fix height/width order. Before they were reversed and broken.
 * :release:`1.1.0 <2014.01.14>`
 * :support:`-` Display progress for management command.
-* :feature:`_` Require Pillow.
+* :feature:`-` Require Pillow.
 * :release:`1.0.5 <2013.09.04>`
 * :bug:`-` Check if destination field exists before deleting.
 * :release:`1.0.4 <2013.09.04>`
