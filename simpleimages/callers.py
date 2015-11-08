@@ -14,11 +14,9 @@ def _no_action(function, *args, **kwargs):
 
 def celery(function, *args, **kwargs):
     '''
-    Calls ``function`` asynchronously by creatinga a
+    Calls ``function`` asynchronously by creating a
     `shared-task <http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html#using-the-shared-task-decorator>`_
     with celery.
-
-    Requires celery `to be set up first  with Django<http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html>`_.
     '''
     from celery import shared_task
     shared_task(function).delay(*args, **kwargs)
