@@ -5,8 +5,6 @@ python:
   - "3.3"
 services:
   - redis-server
-before_script:
-  - psql -c 'create database django_simpleimages;' -U postgres
 install:
   - pip install -e . -r requirements-testing.txt $DJANGO_VERSION
 script:
@@ -14,6 +12,9 @@ script:
 after_success:
   - coveralls
 env:
+  global:
+    - DB_HOST=localhost
+    - REDIS_HOST=localhost
   matrix:
     - DJANGO_VERSION="django>=1.5,<1.6"
     - DJANGO_VERSION="django>=1.6,<1.7"

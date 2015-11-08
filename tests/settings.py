@@ -12,14 +12,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'HOST': 'db',
+        'HOST': os.environ['DB_HOST'],
         'PORT': 5432,
     }
 }
 
 RQ_QUEUES = {
     'default': {
-        'HOST': 'redis',
+        'HOST': os.environ['REDIS_HOST'],
         'PORT': 6379,
         'DB': 0,
     },

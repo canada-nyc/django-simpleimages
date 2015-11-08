@@ -6,6 +6,9 @@ tests:
   links:
     - db
     - redis
+  environment:
+    DB_HOST: db
+    REDIS_HOST: redis
 db:
   image: postgres
 redis:
