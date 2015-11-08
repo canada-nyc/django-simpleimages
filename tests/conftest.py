@@ -6,9 +6,6 @@ import shutil
 from django.core.files.base import ContentFile
 from django.conf import settings
 
-import django_rq
-import pq
-
 import simpleimages
 import simpleimages.trackers
 from .models import TestModel
@@ -54,6 +51,12 @@ def image():
 
 def remove_media():
     shutil.rmtree(settings.MEDIA_ROOT)
+
+
+@pytest.fixture()
+def instance_no_image(image, request):
+    request.addfinalizer(remove_media)
+    return TestModel()
 
 
 @pytest.fixture()
@@ -110,17 +113,3 @@ def transform():
 def transform_return_same(transform):
     transform.transform_pil_image = lambda pil_image: pil_image
     return transform
-
-
-@pytest.fixture()
-def rq_caller(settings):
-    settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'django_rq.enqueue'
-
-    return lambda: django_rq.get_worker().work(burst=True)
-
-
-@pytest.fixture()
-def pq_caller(settings):
-    settings.SIMPLEIMAGES_TRANSFORM_CALLER = 'simpleimages.callers.pq'
-
-    return lambda: pq.W.create([pq.PQ.create()]).work(burst=True)

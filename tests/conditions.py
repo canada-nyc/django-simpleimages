@@ -1,9 +1,10 @@
 import pytest
-import redis.connection
+from django_rq.queues import get_connection
+import redis
 
 try:
-    redis.connection.Connection().connect()
-except redis.connection.ConnectionError:
+    get_connection().ping()
+except redis.exceptions.ConnectionError:
     cant_connect = True
 else:
     cant_connect = False

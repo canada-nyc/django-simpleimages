@@ -144,6 +144,10 @@ arguments and keyword arguments. This format was based around
 
 .. _django-rq: https://github.com/ui/django-rq#putting-jobs-in-the-queue
 
+
+There is also built in support for celery, just set
+``SIMPLEIMAGES_TRANSFORM_CALLER='simpleimages.callers.celery'``
+
 Then you have to account for the fact that sometimes the transformed
 images won't be available in time to render them on the page. If you
 want to fall back to the source image, if the transformed image isn't

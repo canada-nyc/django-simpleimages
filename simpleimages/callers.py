@@ -1,6 +1,3 @@
-from django.db import DatabaseError
-
-
 def default(function, *args, **kwargs):
     '''
     Calls ``function`` with any passed in ``args`` and ``kwargs.
@@ -9,22 +6,19 @@ def default(function, *args, **kwargs):
 
 
 def _no_action(function, *args, **kwargs):
+    '''
+    Does nothing. For testing.
+    '''
     pass
 
 
-def pq(function, *args, **kwargs):
+def celery(function, *args, **kwargs):
     '''
-    Adds ``function`` to the `django-pq <https://github.com/bretth/django-pq>`_
-    default queue, with any passed in
-    ``args`` and ``kwargs`` It will create this queue if it doesn't exist.
-    '''
-    from pq.queue import Queue
-    queue = Queue.create()
-    # Try to create the queue table, but if the database isn't set up yet
-    # then don't create it
-    try:
-        queue.save()
-    except DatabaseError:
-        pass
+    Calls ``function`` asynchronously by creatinga a
+    `shared-task <http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html#using-the-shared-task-decorator>`_
+    with celery.
 
-    queue.enqueue(function, *args, **kwargs)
+    Requires celery `to be set up first  with Django<http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html>`_.
+    '''
+    from celery import shared_task
+    shared_task(function).delay(*args, **kwargs)

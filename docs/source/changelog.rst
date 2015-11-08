@@ -2,6 +2,10 @@
 Changelog
 =========
 
+* :feature:`-` Remove support for PQ (it isn't being maintained).
+* :feature:`-` Added support for Celery.
+* :feature:`-` Added support for Python 3.5 and Django 1.7, 1.8.
+* :support:`-` Changed to use Docker for development.
 * :release:`1.2.0 <2014.04.07>`
 * :support:`19` Change to use Releases for changelog.
 * :feature:`16` Support Django 1.7 (experimental).
@@ -11,7 +15,7 @@ Changelog
 * :bug:`-` Fix height/width order. Before they were reversed and broken.
 * :release:`1.1.0 <2014.01.14>`
 * :support:`-` Display progress for management command.
-* :feature:`_` Require Pillow.
+* :feature:`-` Require Pillow.
 * :release:`1.0.5 <2013.09.04>`
 * :bug:`-` Check if destination field exists before deleting.
 * :release:`1.0.4 <2013.09.04>`

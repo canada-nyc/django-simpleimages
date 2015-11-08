@@ -1,6 +1,6 @@
 *.py[co]
 *.egg-info
-.coverage
+.coverage*
 
 .DS_Store
 /dist/

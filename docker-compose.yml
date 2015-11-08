@@ -1,0 +1,16 @@
+tests:
+  build: .
+  command: "py.test"
+  volumes:
+    - .:/usr/src/app
+  links:
+    - db
+    - redis
+  environment:
+    DB_HOST: db
+    DB_NAME: postgres
+    REDIS_HOST: redis
+db:
+  image: postgres
+redis:
+  image: redis
