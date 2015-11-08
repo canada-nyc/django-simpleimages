@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* :feature:`-` Remove support for PQ (it isn't being maintained).
+* :feature:`-` Added support for Celery.
 * :feature:`-` Added support for Python 3.5 and Django 1.7, 1.8.
 * :support:`-` Changed to use Docker for development.
 * :release:`1.2.0 <2014.04.07>`
