@@ -4,11 +4,11 @@ Code that is necessary for supporting older Django versions
 
 try:
     from django.apps.config import get_model
-except ImportError:  # Django < 1.8
+except ImportError:  # Django < 1.8 pragma: no cover
     from django.db.models import get_model
 
 
-def import_by_path(dotted_path, error_prefix=''):
+def import_by_path(dotted_path, error_prefix=''):  # pragma: no cover
     """
     Added in Django 1.6 to django.utils.module_loading
 
