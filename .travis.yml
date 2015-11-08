@@ -3,6 +3,8 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
+  - "3.4"
+  - "3.5"
 services:
   - redis-server
 install:
@@ -16,9 +18,15 @@ env:
     - DB_HOST=localhost
     - REDIS_HOST=localhost
   matrix:
-    - DJANGO_VERSION="django>=1.5,<1.6"
+    - DJANGO_VERSION="django>=1.8,<1.9"
+    - DJANGO_VERSION="django>=1.7,<1.8"
     - DJANGO_VERSION="django>=1.6,<1.7"
-    - DJANGO_VERSION="https://www.djangoproject.com/m/releases/1.7/Django-1.7b1.tar.gz"
+    - DJANGO_VERSION="django>=1.5,<1.6"
 matrix:
-  allow_failures:
-    - env: DJANGO_VERSION="https://www.djangoproject.com/m/releases/1.7/Django-1.7b1.tar.gz"
+  exclude:
+    - python: "3.5"
+      env: DJANGO_VERSION="django>=1.5,<1.6"
+    - python: "3.5"
+      env: DJANGO_VERSION="django>=1.6,<1.7"
+    - python: "3.5"
+      env: DJANGO_VERSION="django>=1.7,<1.8"
