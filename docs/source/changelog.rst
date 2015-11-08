@@ -2,6 +2,7 @@
 Changelog
 =========
 
+* :support:`-` Changed to use Docker for development.
 * :release:`1.2.0 <2014.04.07>`
 * :support:`19` Change to use Releases for changelog.
 * :feature:`16` Support Django 1.7 (experimental).

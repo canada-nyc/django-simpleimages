@@ -15,33 +15,14 @@ Add proper docstrings to any changed or added code.
 
 Then make sure all the tests past (and write new ones for any new features).
 
-To run the tests you must be running PostgreSQL with a database
-called ``django_simpleimages_test``. To create one run::
+To run the tests::
 
-    createuser -s postgres
-    psql -c 'create database django_simpleimages;' -U postgres
-
-Then install Python dependencies::
-
-    pip install -e .
-    pip install -r requirements-dev.txt
-
-
-And finally run the tests::
-
-    py.test
-
-To test for RQ support, you must have a Redis installed and accesible
-via default login. If py.test can't find a working Redis connection,
-it will skip the RQ tests.
-
-Check if the ``README.rst`` looks right::
-
-    restview --long-description
+    docker-compose up -d db redis
+    docker-compose run tests
 
 Compile the documentation and check if it looks right::
 
-    make docs-html
+    docker-compose run tests make docs-html
     open docs/build/index.html
 
 Then push the finished feature to github and open a pull request form the branch.

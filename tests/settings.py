@@ -10,14 +10,16 @@ TEMPLATE_DEBUG = DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_simpleimages',
+        'NAME': 'postgres',
         'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
 RQ_QUEUES = {
     'default': {
-        'HOST': 'localhost',
+        'HOST': 'redis',
         'PORT': 6379,
         'DB': 0,
     },

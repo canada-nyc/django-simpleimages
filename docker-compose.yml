@@ -1,0 +1,12 @@
+tests:
+  build: .
+  command: "py.test"
+  volumes:
+    - .:/usr/src/app
+  links:
+    - db
+    - redis
+db:
+  image: postgres
+redis:
+  image: redis
