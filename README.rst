@@ -1,17 +1,11 @@
 django-simpleimages
 ===================
 
-.. image:: https://pypip.in/v/django-simpleimages/badge.png
-        :target: https://crate.io/packages/django-simpleimages
+.. image:: https://img.shields.io/pypi/v/django-simpleimages.svg?style=flat-square   :target: https://pypi.python.org/pypi/django-simpleimages
 
-.. image:: https://pypip.in/d/django-simpleimages/badge.png
-        :target: https://crate.io/packages/django-simpleimages
+.. image:: https://img.shields.io/travis/saulshanabrook/django-simpleimages.svg?style=flat-square   :target: https://travis-ci.org/saulshanabrook/django-simpleimages/
 
-.. image:: https://travis-ci.org/saulshanabrook/django-simpleimages.svg?branch=master
-        :target: https://travis-ci.org/saulshanabrook/django-simpleimages
-
-.. image:: https://coveralls.io/repos/saulshanabrook/django-simpleimages/badge.png?branch=master
-    :target: https://coveralls.io/r/saulshanabrook/django-simpleimages
+.. image:: https://img.shields.io/coveralls/saulshanabrook/django-simpleimages.svg?style=flat-square   :target: https://coveralls.io/r/saulshanabrook/django-simpleimages
 
 
 ``django-simpleimages`` is an opinionated Django app which allows you
