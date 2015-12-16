@@ -1,9 +1,7 @@
 import os
 
-try:
-    from django.utils.module_loading import import_by_path
-except:  # Added in Django 1.6
-    from simpleimages.django_compat import import_by_path
+
+from simpleimages.django_compat import import_by_path
 
 
 def get_caller():

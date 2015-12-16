@@ -22,12 +22,17 @@ env:
     - DB_NAME=mydb
     - REDIS_HOST=localhost
   matrix:
+    - DJANGO_VERSION="django==1.9.*"
     - DJANGO_VERSION="django==1.8.*"
     - DJANGO_VERSION="django==1.7.*"
     - DJANGO_VERSION="django==1.6.*"
     - DJANGO_VERSION="django==1.5.*"
 matrix:
   exclude:
+    - python: "3.2"
+      env: DJANGO_VERSION="django==1.9.*"
+    - python: "3.3"
+      env: DJANGO_VERSION="django==1.9.*"
     - python: "3.5"
       env: DJANGO_VERSION="django==1.5.*"
     - python: "3.5"
