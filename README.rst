@@ -7,14 +7,12 @@ django-simpleimages
 
 .. image:: https://img.shields.io/coveralls/saulshanabrook/django-simpleimages.svg?style=flat-square   :target: https://coveralls.io/r/saulshanabrook/django-simpleimages
 
+.. image:: https://landscape.io/github/saulshanabrook/django-simpleimages/master/landscape.svg?style=flat-square
+   :target: https://landscape.io/github/saulshanabrook/django-simpleimages/master
+   :alt: Code Health
 
 ``django-simpleimages`` is an opinionated Django app which allows you
 to transform images on model saves.
 
 http://django-simpleimages.readthedocs.org/
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/saulshanabrook/django-simpleimages/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
 
