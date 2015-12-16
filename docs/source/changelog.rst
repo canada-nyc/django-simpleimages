@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* :release:`1.3.1 <2015.12.16>`
+* :feature:`-` Added support for Django 1.9.
 * :release:`1.3.0 <2015.11.08>`
 * :feature:`-` Remove support for PQ (it isn't being maintained).
 * :feature:`-` Added support for Celery.
