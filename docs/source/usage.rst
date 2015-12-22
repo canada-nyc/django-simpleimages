@@ -64,16 +64,31 @@ and another time to get the dimensions::
     import simpleimages.transforms
     import simpleimages.trackers
 
-    class Photo(models.Model):
-        def image_path_function(subfolder):
-            return lambda instance, filename: os.path.join(
-                'photos',
-                subfolder,
-                filename
-            )
 
+    def image_path_function(subfolder, instance, filename):
+        return os.path.join(
+            instance.content_name,
+            'photos',
+            subfolder,
+            filename
+        )
+
+
+    def original_image_path_function(instance, filename):
+        return image_path_function('original', instance, filename)
+
+
+    def thumbnail_image_path_function(instance, filename):
+        return image_path_function('thumbnail', instance, filename)
+
+
+    def large_image_path_function(instance, filename):
+        return image_path_function('large', instance, filename)
+
+
+    class Photo(models.Model):
         image = models.ImageField(
-            upload_to=image_path_function('original'),
+            upload_to=original_image_path_function,
             max_length=1000,
 
         )
@@ -81,7 +96,7 @@ and another time to get the dimensions::
             blank=True,
             null=True,
             editable=False,
-            upload_to=image_path_function('thumbnail'),
+            upload_to=thumbnail_image_path_function,
             height_field='thumbnail_image_height',
             width_field='thumbnail_image_width',
             max_length=1000
@@ -90,7 +105,7 @@ and another time to get the dimensions::
             blank=True,
             null=True,
             editable=False,
-            upload_to=image_path_function('large'),
+            upload_to=large_image_path_function,
             height_field='large_image_height',
             width_field='large_image_width',
             max_length=1000
@@ -151,7 +166,7 @@ There is also built in support for celery, just set
 Then you have to account for the fact that sometimes the transformed
 images won't be available in time to render them on the page. If you
 want to fall back to the source image, if the transformed image isn't
-rendered yet, use something like this:
+rendered yet, use something like this::
 
 
     import os
@@ -161,16 +176,31 @@ rendered yet, use something like this:
     import simpleimages.transforms
     import simpleimages.trackers
 
-    class Photo(models.Model):
-        def image_path_function(subfolder):
-            return lambda instance, filename: os.path.join(
-                'photos',
-                subfolder,
-                filename
-            )
 
+    def image_path_function(subfolder):
+        return lambda instance, filename: os.path.join(
+            instance.content_name,
+            'photos',
+            subfolder,
+            filename
+        )
+
+
+    def original_image_path_function(instance, filename):
+        image_path_function('original')(instance, filename)
+
+
+    def thumbnail_image_path_function(instance, filename):
+        image_path_function('thumbnail')(instance, filename)
+
+
+    def large_image_path_function(instance, filename):
+        image_path_function('large')(instance, filename)
+
+
+    class Photo(models.Model):
         image = models.ImageField(
-            upload_to=image_path_function('original'),
+            upload_to=original_image_path_function,
             max_length=1000,
 
         )
@@ -178,15 +208,40 @@ rendered yet, use something like this:
             blank=True,
             null=True,
             editable=False,
-            upload_to=image_path_function('thumbnail'),
+            upload_to=thumbnail_image_path_function,
+            height_field='thumbnail_image_height',
+            width_field='thumbnail_image_width',
             max_length=1000
         )
         large_image = models.ImageField(
             blank=True,
             null=True,
             editable=False,
-            upload_to=image_path_function('large'),
+            upload_to=large_image_path_function,
+            height_field='large_image_height',
+            width_field='large_image_width',
             max_length=1000
+        )
+        # cached dimension fields
+        thumbnail_image_height = models.PositiveIntegerField(
+            null=True,
+            blank=True,
+            editable=False,
+        )
+        thumbnail_image_width = models.PositiveIntegerField(
+            null=True,
+            blank=True,
+            editable=False,
+        )
+        large_image_height = models.PositiveIntegerField(
+            null=True,
+            blank=True,
+            editable=False,
+        )
+        large_image_width = models.PositiveIntegerField(
+            null=True,
+            blank=True,
+            editable=False,
         )
 
         @property
