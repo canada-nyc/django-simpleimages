@@ -2,6 +2,9 @@
 Changelog
 =========
 
+* :release:`1.3.2 <2015.12.22>`
+* :support:`26` Removed lambdas in docs for model.
+* :bug:`-` Removed extranious `print` debugging.
 * :release:`1.3.1 <2015.12.16>`
 * :feature:`-` Added support for Django 1.9.
 * :release:`1.3.0 <2015.11.08>`
