@@ -20,6 +20,7 @@ setup(
         "six",
         "Pillow",
         'clint',
+        'dill',
     ],
     zip_safe=False,  # so that django finds management commands,
     classifiers=[

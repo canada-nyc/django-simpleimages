@@ -2,6 +2,7 @@
 Changelog
 =========
 
+* :bug:`-` Fixed Celery task defination.
 * :release:`1.3.2 <2015.12.22>`
 * :support:`26` Removed lambdas in docs for model.
 * :bug:`-` Removed extranious `print` debugging.
