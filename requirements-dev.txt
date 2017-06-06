@@ -1,6 +1,4 @@
 -r requirements-testing.txt
 -r requirements-documentation.txt
 
-distribute
 restview
-wheel
