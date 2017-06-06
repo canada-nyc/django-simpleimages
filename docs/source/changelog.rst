@@ -1,7 +1,8 @@
 =========
 Changelog
 =========
-
+* :release:`1.3.4 <2017.06.06>`
+* :bug:`-` Save color profiles with images
 * :release:`1.3.3 <2015.12.26>`
 * :bug:`-` Fixed Celery task defination.
 * :release:`1.3.2 <2015.12.22>`
