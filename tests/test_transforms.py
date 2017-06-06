@@ -33,6 +33,18 @@ class TestPILtransform:
 
         assert isinstance(django_file, django.core.files.File)
 
+    def test_profile_same(self, image, transform_return_same):
+
+        pil_image = image.pil_image
+        pil_image.info['icc_profile'] = str.encode("some profile")
+
+        new_transformed_image = transform_return_same.django_file_to_pil_image(
+            transform_return_same.pil_image_to_django_file(
+                pil_image
+            )
+        )
+        assert new_transformed_image.info['icc_profile'] == str.encode("some profile")
+
 
 class TestScale:
     def test_width(self, image):
@@ -99,3 +111,16 @@ class TestScale:
 
         new_width, new_height = get_image_dimensions(new_image)
         assert new_height == 2 * new_width
+
+    def test_profile_same(self, image):
+
+        pil_image = image.pil_image
+        pil_image.info['icc_profile'] = str.encode("some profile")
+
+        transform = simpleimages.transforms.Scale(width=10)
+
+        new_transformed_image = transform.transform_pil_image(
+            pil_image
+        )
+
+        assert new_transformed_image.info['icc_profile'] == str.encode("some profile")

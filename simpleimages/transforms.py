@@ -67,7 +67,8 @@ class BasePILTransform(object):
             "JPEG",
             quality=self.IMAGE_QUALITY,
             optimize=True,
-            progressive=True
+            progressive=True,
+            icc_profile=pil_image.info.get('icc_profile')
         )
 
         temp_io.seek(0)
