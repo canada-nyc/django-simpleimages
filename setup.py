@@ -16,11 +16,11 @@ setup(
     description='Opinionated Django image transforms on models',
     long_description=open('README.rst').read(),
     install_requires=[
-        "Django>=1.5,<1.10",
+        "Django>=1.5,<1.12",
         "six",
         "Pillow",
         'clint',
-        'dill',
+        'dill<0.2.8',
     ],
     zip_safe=False,  # so that django finds management commands,
     classifiers=[
