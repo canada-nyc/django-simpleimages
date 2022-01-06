@@ -4,5 +4,5 @@ pytest-cov
 pytest-pep8
 django-rq
 psycopg2
-celery==3.1.19
+celery==5.2.2
 pytest-xdist
