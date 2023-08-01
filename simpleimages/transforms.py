@@ -131,11 +131,11 @@ class Scale(BasePILTransform):
         down the image.
 
         Based on `this stackoverflow discussions <http://stackoverflow.com/a/940368/907060>`_, uses
-        :attr:`PIL.Image.ANTIALIAS`
+        :attr:`PIL.Image.LANCZOS'
         '''
         max_width = min(self.dimensions[0] or float('inf'), pil_image.size[0])
         max_height = min(self.dimensions[1] or float('inf'), pil_image.size[1])
         max_dimensions = (max_width, max_height)
 
-        pil_image.thumbnail(max_dimensions, Image.ANTIALIAS)
+        pil_image.thumbnail(max_dimensions, Image.LANCZOS)
         return pil_image
