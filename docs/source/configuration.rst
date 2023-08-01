@@ -17,5 +17,5 @@ image retrieval for async creation.
 
 Requirements
 ------------
-* Django 1.5, 1.6, 1.7, 1.8
+* Django 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11
 * Python 2.7, 3.2, 3.3, 3.4, 3.5
