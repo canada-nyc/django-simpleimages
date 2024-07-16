@@ -1,6 +1,6 @@
 python-coveralls
 pytest-django
-pytest-cov
+pytest-cov==2.5.1
 pytest-pep8
 django-rq
 psycopg2
